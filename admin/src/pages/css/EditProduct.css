@@ -1,0 +1,423 @@
+/* ================= LAYOUT ================= */
+
+.layout {
+  display: flex;
+
+  min-height: 100vh;
+
+  background: #f8fafc;
+}
+
+/* ================= SET SIZES ================= */
+
+.set-sizes {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.size-box {
+  background: #fff7ed;
+
+  border: 1px solid #fed7aa;
+
+  padding: 10px;
+
+  border-radius: 14px;
+}
+
+.size-title {
+  font-weight: 800;
+
+  color: #ea580c;
+
+  margin-bottom: 8px;
+}
+
+.size-list {
+  display: flex;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+.size-list span,
+.normal-sizes span {
+  background: white;
+
+  border: 1px solid #ff7a00;
+
+  color: #111827;
+
+  padding: 5px 12px;
+
+  border-radius: 20px;
+
+  font-weight: 700;
+
+  font-size: 14px;
+}
+.price-area {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.old-price {
+  font-size: 17px;
+
+  color: #999;
+
+  text-decoration: line-through;
+
+  font-weight: 700;
+}
+.price-area {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin: 15px 0;
+}
+
+.price-label {
+  font-size: 16px;
+
+  font-weight: 800;
+
+  color: #333;
+}
+
+.old-price {
+  color: #999;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  text-decoration: line-through;
+}
+
+.current-price {
+  font-size: 24px;
+
+  font-weight: 900;
+
+  color: #ff8c00;
+}
+.price-area {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  width: 100%;
+
+  margin: 15px 0;
+}
+
+.price-label {
+  font-size: 16px;
+
+  font-weight: 800;
+}
+
+.current-price {
+  font-size: 24px;
+
+  font-weight: 900;
+
+  color: #ff8c00;
+}
+.current-price {
+  font-size: 24px;
+
+  font-weight: 900;
+
+  color: #ff8c00;
+}
+.normal-sizes {
+  display: flex;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+/* ================= PAGE ================= */
+
+.products-page {
+  flex: 1;
+
+  padding: 40px;
+}
+
+/* ================= HEADER ================= */
+
+.products-header {
+  margin-bottom: 35px;
+}
+
+.products-header h3 {
+  font-size: 36px !important;
+
+  font-weight: 900 !important;
+
+  color: #111827;
+
+  margin: 0;
+}
+
+.products-header p {
+  margin-top: 8px;
+
+  color: #64748b;
+
+  font-size: 16px;
+}
+
+/* ================= CATEGORY TABS ================= */
+
+.category-box {
+  background: white;
+
+  padding: 8px;
+
+  border-radius: 22px;
+
+  margin-bottom: 35px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.tabs .MuiTabs-indicator {
+  height: 4px;
+
+  border-radius: 10px;
+
+  background: #ff7a00;
+}
+
+.tabs .MuiTab-root {
+  font-weight: 800;
+
+  font-size: 15px;
+
+  color: #64748b;
+
+  border-radius: 15px;
+
+  transition: 0.3s;
+}
+
+.tabs .Mui-selected {
+  color: #ff7a00 !important;
+}
+
+/* ================= PRODUCTS GRID ================= */
+
+.products-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+
+  gap: 30px;
+}
+
+/* ================= PRODUCT CARD ================= */
+
+.product-card {
+  border-radius: 26px !important;
+
+  overflow: hidden;
+
+  background: white;
+
+  border: 1px solid #f1f5f9;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+
+  transition: 0.35s ease !important;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+
+  box-shadow: 0 20px 45px rgba(255, 122, 0, 0.18);
+}
+
+/* ================= IMAGE ================= */
+
+.image-box {
+  background: #f8fafc;
+
+  padding: 10px;
+}
+
+.product-card img {
+  height: 260px;
+
+  object-fit: contain !important;
+
+  transition: 0.4s;
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+/* ================= PRODUCT NAME ================= */
+
+.product-name {
+  font-weight: 900 !important;
+
+  color: #111827;
+
+  margin-bottom: 15px !important;
+}
+
+/* ================= INFO ================= */
+
+.product-info {
+  background: #f8fafc;
+
+  padding: 15px;
+
+  border-radius: 18px;
+
+  margin-top: 15px;
+}
+
+.product-info p {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin: 10px 0;
+
+  color: #64748b;
+
+  font-weight: 700;
+}
+
+.product-info span {
+  color: #111827;
+
+  font-weight: 900;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+.actions {
+  display: flex;
+
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.actions button {
+  flex: 1;
+
+  height: 45px;
+
+  border-radius: 14px !important;
+
+  font-weight: 800 !important;
+}
+
+.edit-btn {
+  background: #ff7a00 !important;
+}
+
+.edit-btn:hover {
+  background: #e96d00 !important;
+}
+
+.delete-btn {
+  background: #dc2626 !important;
+}
+
+.delete-btn:hover {
+  background: #b91c1c !important;
+}
+
+/* ================= EDIT FORM ================= */
+
+.edit-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+.edit-form input,
+.edit-form select {
+  padding: 13px;
+
+  border-radius: 14px;
+
+  border: 1px solid #e2e8f0;
+
+  outline: none;
+
+  font-size: 15px;
+}
+
+.edit-form input:focus,
+.edit-form select:focus {
+  border-color: #ff7a00;
+
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.12);
+}
+
+.edit-buttons {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 15px;
+}
+
+.edit-buttons button {
+  flex: 1;
+
+  border-radius: 14px !important;
+
+  font-weight: 800 !important;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+  .products-page {
+    padding: 20px;
+  }
+
+  .products-header h3 {
+    font-size: 26px !important;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-card {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

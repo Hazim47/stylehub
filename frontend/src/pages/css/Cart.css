@@ -1,0 +1,354 @@
+.cart-page {
+  max-width: 1500px;
+
+  margin: auto;
+
+  padding: 80px 5%;
+}
+
+/* =====================
+        TITLE
+===================== */
+.cart-title {
+  font-size: 42px !important;
+
+  font-weight: 1000 !important;
+
+  letter-spacing: 4px;
+
+  margin-bottom: 35px !important;
+
+  color: #111;
+
+  position: relative;
+
+  text-transform: uppercase;
+}
+
+/* الخط الفاخر تحت العنوان */
+
+.cart-title::after {
+  content: "";
+
+  display: block;
+
+  width: 90px;
+
+  height: 4px;
+
+  margin-top: 12px;
+
+  border-radius: 20px;
+
+  background: linear-gradient(90deg, #000, #d4af37);
+
+  transition: 0.4s;
+}
+
+/* حركة بسيطة */
+
+.cart-title:hover::after {
+  width: 140px;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .cart-title {
+    font-size: 34px !important;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 25px !important;
+  }
+
+  .cart-title::after {
+    width: 70px;
+
+    height: 3px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 500px) {
+  .cart-title {
+    font-size: 28px !important;
+
+    letter-spacing: 2px;
+  }
+}
+/* =====================
+        EMPTY CART
+===================== */
+
+.cart-empty {
+  min-height: 70vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: linear-gradient(135deg, #fff, #fafafa);
+
+  border-radius: 40px;
+
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
+}
+
+.cart-empty-icon {
+  font-size: 100px !important;
+
+  color: #d4af37;
+
+  margin-bottom: 30px;
+
+  animation: float 3s infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.cart-empty-title {
+  font-size: 28px !important; /* بدل 38 */
+  font-weight: 900 !important;
+  color: #111;
+}
+
+/* =====================
+        SHOP BUTTON
+===================== */
+
+.cart-shop-btn {
+  margin-top: 40px !important;
+
+  background: #000 !important;
+
+  color: white !important;
+
+  padding: 16px 50px !important;
+
+  border-radius: 60px !important;
+
+  font-weight: 1000 !important;
+
+  font-size: 15px !important;
+
+  transition: 0.35s !important;
+}
+
+.cart-shop-btn:hover {
+  transform: translateY(-5px);
+
+  background: #d4af37 !important;
+
+  color: #000 !important;
+
+  box-shadow: 0 20px 40px rgba(212, 175, 55, 0.35);
+}
+
+/* =====================
+      ORDER SUMMARY
+===================== */
+
+.summary-card {
+  padding: 40px;
+
+  border-radius: 35px !important;
+
+  position: sticky;
+
+  top: 100px;
+
+  background: linear-gradient(145deg, #ffffff, #f8f8f8) !important;
+
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12) !important;
+
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 5px;
+
+  background: linear-gradient(90deg, #000, #d4af37, #000);
+}
+
+/* =====================
+        SUMMARY TITLE
+===================== */
+
+.summary-title {
+  font-size: 30px !important;
+
+  font-weight: 1000 !important;
+
+  letter-spacing: 1px;
+
+  margin-bottom: 30px !important;
+}
+
+/* =====================
+        COUPON
+===================== */
+
+.coupon-btn {
+  margin-top: 18px !important;
+
+  background: #000 !important;
+
+  color: white !important;
+
+  padding: 15px !important;
+
+  font-weight: 1000 !important;
+
+  border-radius: 18px !important;
+
+  transition: 0.3s !important;
+}
+
+.coupon-btn:hover {
+  background: #d4af37 !important;
+
+  color: #000 !important;
+
+  transform: translateY(-3px);
+}
+
+.coupon-success {
+  margin-top: 18px;
+
+  padding: 12px;
+
+  border-radius: 15px;
+
+  background: #f1f7e8;
+
+  color: #556b2f;
+
+  font-weight: 800;
+}
+
+.coupon-error {
+  margin-top: 18px;
+
+  padding: 12px;
+
+  border-radius: 15px;
+
+  background: #ffecec;
+
+  color: #d00000;
+
+  font-weight: 800;
+}
+
+/* =====================
+        CHECKOUT
+===================== */
+
+.checkout-btn {
+  margin-top: 40px !important;
+
+  background: #000 !important;
+
+  color: white !important;
+
+  padding: 20px !important;
+
+  border-radius: 22px !important;
+
+  font-size: 19px !important;
+
+  font-weight: 1000 !important;
+
+  transition: 0.35s !important;
+}
+
+.checkout-btn:hover {
+  background: #d4af37 !important;
+
+  color: #000 !important;
+
+  transform: translateY(-5px);
+
+  box-shadow: 0 25px 50px rgba(212, 175, 55, 0.35);
+}
+
+/* =====================
+        TOTAL PRICE
+===================== */
+
+.summary-card strong {
+  font-size: 28px;
+
+  font-weight: 1000;
+}
+
+/* =====================
+        RESPONSIVE
+===================== */
+
+@media (max-width: 900px) {
+  .cart-page {
+    padding: 45px 20px;
+  }
+
+  .cart-title {
+    font-size: 40px !important;
+
+    letter-spacing: 2px;
+  }
+
+  .summary-card {
+    position: static;
+
+    margin-top: 30px;
+
+    padding: 28px;
+  }
+}
+
+@media (max-width: 500px) {
+  .cart-title {
+    font-size: 32px !important;
+  }
+
+  .cart-empty {
+    padding: 40px 20px;
+  }
+
+  .cart-empty-icon {
+    font-size: 90px !important;
+  }
+
+  .cart-empty-title {
+    font-size: 28px !important;
+  }
+
+  .cart-shop-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,187 @@
+/* ================= ADMIN LAYOUT ================= */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+/* ================= CONTENT ================= */
+
+.page-content {
+  flex: 1;
+  padding: 40px;
+}
+
+/* ================= PRODUCT FORM CARD ================= */
+
+.product-form {
+  max-width: 650px;
+
+  margin: 30px auto;
+
+  padding: 35px;
+
+  background: white;
+
+  border-radius: 28px;
+
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+
+  border: 1px solid #f1f5f9;
+
+  transition: 0.3s;
+}
+
+.product-form:hover {
+  box-shadow: 0 20px 60px rgba(255, 122, 0, 0.15);
+}
+
+/* ================= FORM ================= */
+
+.product-form form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 22px;
+}
+
+/* ================= INPUTS ================= */
+
+.product-form input {
+  padding: 15px 18px;
+
+  border-radius: 14px;
+
+  border: 1px solid #e2e8f0;
+
+  font-size: 16px;
+
+  outline: none;
+
+  transition: 0.3s;
+
+  background: white;
+}
+
+.product-form input:focus {
+  border-color: #ff7a00;
+
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.12);
+}
+
+/* ================= MUI TEXTFIELDS ================= */
+
+.product-form .MuiOutlinedInput-root {
+  border-radius: 14px !important;
+}
+
+.product-form .MuiOutlinedInput-root:hover fieldset {
+  border-color: #ff9500 !important;
+}
+
+.product-form .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #ff7a00 !important;
+
+  border-width: 2px;
+}
+
+/* ================= TITLE ================= */
+
+.product-form h2,
+.product-form h3 {
+  text-align: center;
+
+  font-weight: 900;
+
+  color: #111827;
+
+  margin-bottom: 10px;
+}
+
+/* ================= ADD PRODUCT BUTTON ONLY ================= */
+
+.product-form form > button {
+  margin-top: 10px;
+
+  height: 52px;
+
+  border-radius: 15px !important;
+
+  background: #ff7a00 !important;
+
+  color: white !important;
+
+  font-size: 17px !important;
+
+  font-weight: 800 !important;
+}
+
+/* ================= SIZE BUTTONS ================= */
+
+/* يرجع أزرار المقاسات لطبيعتها */
+
+.product-form .MuiButton-root {
+  height: auto;
+
+  margin-top: 0;
+
+  font-size: 14px !important;
+}
+
+/* المحدد فقط */
+
+.product-form .MuiButton-contained {
+  background: #ff7a00 !important;
+
+  color: white !important;
+}
+
+/* غير المحدد */
+
+.product-form .MuiButton-outlined {
+  background: white !important;
+
+  color: #333 !important;
+
+  border: 1px solid #ccc !important;
+}
+
+/* hover للمقاسات */
+
+.product-form .MuiButton-outlined:hover {
+  border-color: #ff7a00 !important;
+
+  background: #fff7ed !important;
+}
+
+/* ================= IMAGE UPLOAD ================= */
+
+.product-form img {
+  width: 120px;
+
+  height: 120px;
+
+  object-fit: cover;
+
+  border-radius: 20px;
+
+  margin: auto;
+
+  border: 3px solid #ff7a00;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+  .page-content {
+    padding: 15px;
+  }
+
+  .product-form {
+    padding: 22px;
+
+    border-radius: 20px;
+  }
+}

@@ -1,0 +1,441 @@
+/* ==========================
+   COUPONS PAGE
+========================== */
+
+
+.coupon-page{
+
+    flex:1;
+
+    min-height:100vh;
+
+    background:#f5f7fb;
+
+    padding:35px;
+
+}
+
+
+
+
+/* ==========================
+   HEADER
+========================== */
+
+
+.coupon-header{
+
+    margin-bottom:30px;
+
+}
+
+
+
+.coupon-title{
+
+    display:flex !important;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:#ff6b00;
+
+    font-weight:800 !important;
+
+}
+
+
+
+.coupon-title svg{
+
+    font-size:42px;
+
+}
+
+
+
+.coupon-header p{
+
+    color:#777;
+
+    margin-top:8px;
+
+}
+
+
+
+
+/* ==========================
+   CREATE BOX
+========================== */
+
+
+.create-coupon{
+
+
+    padding:30px !important;
+
+
+    border-radius:22px !important;
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:20px;
+
+
+    max-width:600px;
+
+
+    margin-bottom:40px;
+
+
+    background:white !important;
+
+
+    box-shadow:
+
+    0 15px 40px
+
+    rgba(0,0,0,.08) !important;
+
+
+    animation:show .4s ease;
+
+
+}
+
+
+
+.create-coupon h5{
+
+
+    font-weight:800;
+
+
+    color:#222;
+
+
+}
+
+
+
+
+
+/* ==========================
+   INPUTS
+========================== */
+
+
+.create-coupon .MuiTextField-root{
+
+
+    background:#fff;
+
+
+    border-radius:14px;
+
+
+}
+
+
+
+
+
+/* ==========================
+   CREATE BUTTON
+========================== */
+
+
+.create-btn{
+
+
+    height:55px !important;
+
+
+    border-radius:15px !important;
+
+
+    text-transform:none !important;
+
+
+    font-size:16px !important;
+
+
+    font-weight:bold !important;
+
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #ff6b00,
+    #ff9800
+    ) !important;
+
+
+
+    transition:.3s !important;
+
+
+}
+
+
+
+.create-btn:hover{
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+
+    0 12px 25px
+
+    rgba(255,107,0,.35);
+
+
+}
+
+
+
+
+
+/* ==========================
+   COUPONS GRID
+========================== */
+
+
+.coupon-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(
+    auto-fill,
+    minmax(260px,1fr)
+    );
+
+
+    gap:25px;
+
+
+}
+
+
+
+
+
+/* ==========================
+   CARD
+========================== */
+
+
+.coupon-card{
+
+
+    padding:25px !important;
+
+
+    border-radius:22px !important;
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    background:white !important;
+
+
+    box-shadow:
+
+    0 12px 35px
+
+    rgba(0,0,0,.08) !important;
+
+
+    transition:.35s;
+
+
+}
+
+
+
+.coupon-card:hover{
+
+
+    transform:
+
+    translateY(-8px);
+
+
+    box-shadow:
+
+    0 20px 45px
+
+    rgba(0,0,0,.15) !important;
+
+
+}
+
+
+
+
+.coupon-card h5{
+
+
+    font-weight:900;
+
+
+    letter-spacing:2px;
+
+
+    margin-bottom:15px;
+
+
+    color:#222;
+
+
+}
+
+
+
+
+
+/* ==========================
+   DISCOUNT CHIP
+========================== */
+
+
+.coupon-card .MuiChip-root{
+
+
+    background:#fff1e6 !important;
+
+
+    color:#ff6b00 !important;
+
+
+    font-weight:bold;
+
+
+}
+
+
+
+
+
+/* ==========================
+   DELETE BUTTON
+========================== */
+
+
+.coupon-card button{
+
+
+    color:#e53935;
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.coupon-card button:hover{
+
+
+    background:#ffecec;
+
+
+    transform:scale(1.1);
+
+
+}
+
+
+
+
+/* ==========================
+   ANIMATION
+========================== */
+
+
+@keyframes show{
+
+
+from{
+
+opacity:0;
+
+transform:translateY(25px);
+
+}
+
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+
+}
+
+
+
+
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+
+@media(max-width:800px){
+
+
+.coupon-page{
+
+padding:20px;
+
+}
+
+
+
+.create-coupon{
+
+width:100%;
+
+}
+
+
+
+.coupon-grid{
+
+
+grid-template-columns:
+
+1fr;
+
+
+}
+
+
+}
