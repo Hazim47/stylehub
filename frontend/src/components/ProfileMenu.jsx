@@ -75,22 +75,31 @@ export default function ProfileMenu() {
     <Box
       onMouseEnter={() => {
         clearTimeout(timer.current);
-        setOpen(true);
+
+        if (window.innerWidth > 900) {
+          setOpen(true);
+        }
       }}
       onMouseLeave={() => {
-        timer.current = setTimeout(() => {
-          if (!confirmLogout) {
-            setOpen(false);
-          }
-        }, 300);
+        if (window.innerWidth > 900) {
+          timer.current = setTimeout(() => {
+            if (!confirmLogout) {
+              setOpen(false);
+            }
+          }, 300);
+        }
       }}
       sx={{
         position: "relative",
-        zIndex: 2000,
+        zIndex: 9999,
         direction: "inherit",
+        overflow: "visible",
       }}
     >
       <IconButton
+        onClick={() => {
+          setOpen((prev) => !prev);
+        }}
         sx={{
           width: {
             xs: 42,
@@ -112,7 +121,6 @@ export default function ProfileMenu() {
 
           "&:hover": {
             transform: "translateY(-3px)",
-
             background: "#000",
           },
         }}
@@ -140,9 +148,7 @@ export default function ProfileMenu() {
           elevation={15}
           sx={{
             position: "absolute",
-
-            top: "70px",
-
+            top: { xs: "50px", md: "70px" },
             insetInlineEnd: 0,
 
             width: {
@@ -151,13 +157,11 @@ export default function ProfileMenu() {
             },
 
             borderRadius: "25px",
-
             overflow: "hidden",
 
-            zIndex: 5000,
+            zIndex: 99999,
 
             background: "#fff",
-
             direction: "inherit",
           }}
         >

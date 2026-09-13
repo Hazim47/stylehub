@@ -177,26 +177,24 @@ function Navbar() {
       sx={{
         background: "#fff",
         color: "#000",
+
         zIndex: 1200,
-        // باقي الـ sx كما هو
+
+        height: {
+          xs: location.pathname === "/" && !mobileSearch ? "55px" : "110px",
+          md: "70px",
+        },
+
+        justifyContent: "center",
+
+        borderBottom: "1px solid #e8e8e8",
+
+        boxShadow: "0 5px 25px rgba(0,0,0,.05)",
+
+        overflow: "visible",
       }}
     >
-      <Typography
-        sx={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 99999,
-          background: "red",
-          color: "white",
-          p: 1,
-          fontSize: 14,
-        }}
-      >
-        {window.innerWidth}px
-      </Typography>
       <Toolbar
-        disableGutters
         sx={{
           minHeight: {
             xs:
@@ -206,31 +204,21 @@ function Navbar() {
             md: "70px !important",
           },
 
-          width: "100%",
-          maxWidth: "100%",
-          minWidth: 0,
-
           px: {
-            xs: isSmallMobile ? 0.7 : 1,
+            xs: 1.5,
             md: 5,
           },
 
           display: "flex",
 
-          alignItems: "center",
-
           justifyContent: "space-between",
 
           gap: {
-            xs: 0.4,
+            xs: 1,
             md: 3,
           },
 
-          overflow: "hidden",
-
-          "& > *": {
-            minWidth: 0,
-          },
+          overflow: "visible",
         }}
       >
         {/* =====================================================
@@ -292,14 +280,16 @@ function Navbar() {
 
             fontSize: {
               xs: isSmallMobile ? "18px" : "20px",
-              md: "32px",
+              md: "40px",
+              lg: "44px",
             },
 
             fontWeight: 900,
 
             letterSpacing: {
               xs: isSmallMobile ? 1 : 2,
-              md: 3,
+              md: 4,
+              lg: 5,
             },
 
             color: "#000",
@@ -380,11 +370,14 @@ function Navbar() {
 
             width: {
               xs: "auto",
-              md: 280,
-              lg: 350,
+              md: 420,
+              lg: 520,
             },
 
-            height: 40,
+            height: {
+              xs: 40,
+              md: 46,
+            },
 
             borderRadius: "999px",
 
@@ -447,13 +440,10 @@ function Navbar() {
         {/* =====================================================
             RIGHT MENU
         ===================================================== */}
-
         <Box
           sx={{
             display: "flex",
-
             alignItems: "center",
-
             justifyContent: "flex-end",
 
             gap: {
@@ -462,12 +452,14 @@ function Navbar() {
             },
 
             minWidth: 0,
-
             maxWidth: "100%",
-
             flexShrink: 1,
+            overflow: "visible",
+            position: "relative",
+            zIndex: 3000,
 
-            overflow: "hidden",
+            // أضف هذا السطر
+            marginLeft: "auto",
           }}
         >
           {/* =================================================
@@ -541,10 +533,9 @@ function Navbar() {
                     xs: mobileIconSize,
                     md: "auto",
                   },
-
                   p: {
                     xs: 0,
-                    md: "6px 16px",
+                    md: "8px 20px",
                   },
 
                   flexShrink: 0,
@@ -586,12 +577,12 @@ function Navbar() {
               sx={{
                 width: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 height: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 minWidth: 0,
@@ -633,12 +624,12 @@ function Navbar() {
               sx={{
                 width: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 height: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 minWidth: 0,
@@ -705,12 +696,12 @@ function Navbar() {
               sx={{
                 width: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 height: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 minWidth: 0,
@@ -752,12 +743,12 @@ function Navbar() {
               sx={{
                 width: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 height: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 minWidth: 0,
@@ -826,19 +817,18 @@ function Navbar() {
               sx={{
                 minWidth: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 width: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
 
                 height: {
                   xs: mobileIconSize,
-                  md: 44,
+                  md: 48,
                 },
-
                 border: "1px solid #ddd",
 
                 borderRadius: "50%",
@@ -869,8 +859,9 @@ function Navbar() {
           </Box>
 
           {/* ===================================================
-              PROFILE
-          =================================================== */}
+    PROFILE
+=================================================== */}
+
           <Box
             sx={{
               flexShrink: 0,
@@ -879,26 +870,34 @@ function Navbar() {
               alignItems: "center",
               justifyContent: "center",
 
+              width: {
+                xs: 42,
+                md: 48,
+              },
+
               minWidth: {
-                xs: 0,
-                md: 125,
+                xs: 42,
+                md: 48,
               },
 
               height: {
-                xs: mobileIconSize,
-                md: 44,
+                xs: 42,
+                md: 48,
               },
 
-              "& > *": {
-                maxWidth: {
-                  xs: "100%",
-                  md: "125px",
-                },
+              position: "relative",
 
-                width: {
-                  xs: "auto",
-                  md: "100%",
-                },
+              zIndex: 5000,
+
+              overflow: "visible",
+
+              pointerEvents: "auto",
+
+              "& > *": {
+                width: "100%",
+                maxWidth: "none",
+                height: "100%",
+                overflow: "visible",
               },
             }}
           >
