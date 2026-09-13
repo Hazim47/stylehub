@@ -309,7 +309,10 @@ export default function Orders() {
                       loading="lazy"
                       src={
                         item.productImage
-                          ? `http://localhost:5000/uploads/products/${item.productImage}`
+                          ? item.productImage.startsWith("http://") ||
+                            item.productImage.startsWith("https://")
+                            ? item.productImage
+                            : `${import.meta.env.VITE_API_URL}/uploads/products/${item.productImage}`
                           : "/no-image.png"
                       }
                       alt={item.productName || "Product"}

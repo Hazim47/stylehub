@@ -11,18 +11,35 @@ import "../pages/css/CartItem.css";
 function CartItem({ item, increase, decrease, remove }) {
   const { t } = useTranslation();
 
+  // تحويل رابط الصورة سواء كانت Cloudinary أو صورة محلية
+  const getImageUrl = (image) => {
+    if (!image) {
+      return "/no-image.png";
+    }
+
+    // إذا كانت الصورة رابط كامل مثل Cloudinary
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return image;
+    }
+
+    // إذا كان المسار يبدأ بـ /
+    if (image.startsWith("/")) {
+      return `http://localhost:5000${image}`;
+    }
+
+    // إذا كانت صورة محلية قديمة
+    return `http://localhost:5000/uploads/products/${image}`;
+  };
+
   return (
     <Card className="cart-item">
       {/* IMAGE */}
 
       <CardMedia
         component="img"
-        image={
-          item.image
-            ? `http://localhost:5000/uploads/products/${item.image}`
-            : "/no-image.png"
-        }
+        image={getImageUrl(item.image)}
         className="cart-item-image"
+        alt={item.name}
       />
 
       {/* INFO */}

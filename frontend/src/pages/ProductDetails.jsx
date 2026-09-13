@@ -10,7 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import { Snackbar, Alert } from "@mui/material";
-import { Add, Remove, ShoppingBag } from "@mui/icons-material";
+import { Add, Remove } from "@mui/icons-material";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useParams } from "react-router-dom";
 
@@ -22,6 +22,7 @@ import "./css/ProductDetails.css";
 
 function ProductDetails() {
   const { id } = useParams();
+
   const [color, setColor] = useState([]);
   const [product, setProduct] = useState(null);
   const [topSize, setTopSize] = useState("");
@@ -33,8 +34,29 @@ function ProductDetails() {
   const [size, setSize] = useState("");
 
   const [quantity, setQuantity] = useState(1);
+
   const { t } = useTranslation();
   const addToCart = useCartStore((state) => state.addToCart);
+
+  // تحويل رابط الصورة سواء كانت Cloudinary أو صورة محلية
+  const getImageUrl = (image) => {
+    if (!image) {
+      return "/no-image.png";
+    }
+
+    // Cloudinary أو أي رابط كامل
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return image;
+    }
+
+    // إذا كان المسار يبدأ بـ /
+    if (image.startsWith("/")) {
+      return `http://localhost:5000${image}`;
+    }
+
+    // صورة محلية قديمة
+    return `http://localhost:5000/uploads/products/${image}`;
+  };
 
   useEffect(() => {
     const getProduct = async () => {
@@ -60,6 +82,7 @@ function ProductDetails() {
       getProduct();
     }
   }, [id]);
+
   const handleColorSelect = (c) => {
     // إذا اللون موجود احذفه
     if (color.includes(c)) {
@@ -79,6 +102,7 @@ function ProductDetails() {
     // المنتجات العادية لون واحد
     setColor([c]);
   };
+
   if (loading)
     return (
       <Box className="loading">
@@ -101,7 +125,6 @@ function ProductDetails() {
     );
   }
 
-  const imageUrl = "http://localhost:5000/uploads/products/";
   const addProduct = () => {
     if (product.category === "طقم") {
       if (!topSize || !pantsSize) {
@@ -122,6 +145,7 @@ function ProductDetails() {
 
       price: Number(product.price),
 
+      // نخزن الصورة الأصلية كما هي
       image: product.ProductImages?.[0]?.image,
 
       size:
@@ -137,6 +161,7 @@ function ProductDetails() {
 
       quantity,
     });
+
     setOpenSnack(true);
   };
 
@@ -151,17 +176,22 @@ function ProductDetails() {
               {product.ProductImages?.map((img) => (
                 <img
                   key={img.id}
-                  src={imageUrl + img.image}
+                  src={getImageUrl(img.image)}
                   className={
                     selectedImage === img.image ? "thumb active" : "thumb"
                   }
                   onClick={() => setSelectedImage(img.image)}
+                  alt={product.name}
                 />
               ))}
             </div>
 
             <div className="main-image-box">
-              <img src={imageUrl + selectedImage} className="main-image" />
+              <img
+                src={getImageUrl(selectedImage)}
+                className="main-image"
+                alt={product.name}
+              />
             </div>
           </div>
         </Grid>
@@ -183,13 +213,19 @@ function ProductDetails() {
             <Divider />
 
             <p className="description">{product.description}</p>
+
             {product.colors?.length > 0 && (
               <div className="option">
                 <h4>
                   {t("Details.color")}
 
                   {product.category === "طقم" && (
-                    <span style={{ fontSize: "13px", color: "#777" }}>
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        color: "#777",
+                      }}
+                    >
                       {" "}
                       ({t("Details.chooseUpToTwo")})
                     </span>
@@ -212,6 +248,7 @@ function ProductDetails() {
                 </div>
               </div>
             )}
+
             {/* طقم */}
             {product.category === "طقم" && product.sizes && (
               <div className="option">
@@ -267,7 +304,9 @@ function ProductDetails() {
             <div className="quantity">
               <IconButton
                 onClick={() => {
-                  if (quantity > 1) setQuantity(quantity - 1);
+                  if (quantity > 1) {
+                    setQuantity(quantity - 1);
+                  }
                 }}
               >
                 <Remove />
@@ -291,6 +330,7 @@ function ProductDetails() {
           </div>
         </Grid>
       </Grid>
+
       <Snackbar
         open={openSnack}
         autoHideDuration={2500}

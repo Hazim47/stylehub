@@ -145,7 +145,10 @@ export default function SliderSection({ products }) {
                   className="image"
                   src={
                     product.ProductImages?.[0]?.image
-                      ? `http://localhost:5000/uploads/products/${product.ProductImages[0].image}`
+                      ? product.ProductImages[0].image.startsWith("http://") ||
+                        product.ProductImages[0].image.startsWith("https://")
+                        ? product.ProductImages[0].image
+                        : `http://localhost:5000/uploads/products/${product.ProductImages[0].image}`
                       : "/no-image.png"
                   }
                   alt={product.name}

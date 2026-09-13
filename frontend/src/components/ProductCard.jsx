@@ -13,9 +13,23 @@ function ProductCard({ product }) {
 
   const { t } = useTranslation();
 
-  const image = product.ProductImages?.[0]?.image
-    ? `http://localhost:5000/uploads/products/${product.ProductImages[0].image}`
-    : "https://via.placeholder.com/500";
+  const getImageUrl = (image) => {
+    if (!image) {
+      return "https://via.placeholder.com/500";
+    }
+
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return image;
+    }
+
+    if (image.startsWith("/")) {
+      return `http://localhost:5000${image}`;
+    }
+
+    return `http://localhost:5000/uploads/products/${image}`;
+  };
+
+  const image = getImageUrl(product.ProductImages?.[0]?.image);
 
   return (
     <Box

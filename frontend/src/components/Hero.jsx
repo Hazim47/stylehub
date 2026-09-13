@@ -26,29 +26,27 @@ function Hero() {
     fetchHomepage();
   }, []);
 
-  // =====================================================
-  // IMAGE URL
-  // =====================================================
-
   const getImageUrl = (image) => {
     if (!image) return null;
 
-    // الرابط كامل
     if (image.startsWith("http://") || image.startsWith("https://")) {
       return image;
     }
 
-    // الرابط يبدأ بـ /
     if (image.startsWith("/")) {
       return `${API.defaults.baseURL}${image}`;
     }
 
-    // فقط اسم الملف
     return `${API.defaults.baseURL}/uploads/homepage/${image}`;
   };
 
   const heroImage1 = getImageUrl(homepage?.heroImage1);
   const heroImage2 = getImageUrl(homepage?.heroImage2);
+
+  console.log("HOMEPAGE DATA:", homepage);
+  console.log("HERO IMAGE 1:", heroImage1);
+  console.log("HERO IMAGE 2:", heroImage2);
+  console.log("BASE URL:", API.defaults.baseURL);
 
   return (
     <Box
@@ -59,23 +57,26 @@ function Hero() {
         background: "#060806",
       }}
     >
-      {/* =====================================================
-    IMAGES
-===================================================== */}
-
+      {/* HERO IMAGES */}
       <Box
         sx={{
           display: "flex",
           width: "100%",
+          height: {
+            xs: "420px",
+            sm: "480px",
+            md: "560px",
+            lg: "620px",
+          },
         }}
       >
-        {/* HERO 1 */}
-
+        {/* LEFT IMAGE */}
         <Box
           sx={{
             width: "50%",
+            height: "100%",
             overflow: "hidden",
-            lineHeight: 0,
+            position: "relative",
           }}
         >
           {heroImage1 && (
@@ -89,27 +90,27 @@ function Hero() {
               }}
               sx={{
                 width: "100%",
-                height: "auto",
+                height: "100%",
                 display: "block",
-                objectFit: "initial",
-
+                objectFit: "cover",
+                objectPosition: "center center",
                 transition: "transform 1.2s",
 
                 "&:hover": {
-                  transform: "scale(1.02)",
+                  transform: "scale(1.03)",
                 },
               }}
             />
           )}
         </Box>
 
-        {/* HERO 2 */}
-
+        {/* RIGHT IMAGE */}
         <Box
           sx={{
             width: "50%",
+            height: "100%",
             overflow: "hidden",
-            lineHeight: 0,
+            position: "relative",
           }}
         >
           {heroImage2 && (
@@ -123,147 +124,123 @@ function Hero() {
               }}
               sx={{
                 width: "100%",
-                height: "auto",
+                height: "100%",
                 display: "block",
-                objectFit: "initial",
-
+                objectFit: "cover",
+                objectPosition: "center center",
                 transition: "transform 1.2s",
 
                 "&:hover": {
-                  transform: "scale(1.02)",
+                  transform: "scale(1.03)",
                 },
               }}
             />
           )}
         </Box>
       </Box>
-      {/* =====================================================
-          CONTENT
-      ===================================================== */}
 
+      {/* DARK OVERLAY */}
       <Box
         sx={{
           position: "absolute",
+          inset: 0,
+          background: "linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.45))",
+          pointerEvents: "none",
+        }}
+      />
 
+      {/* CENTER CONTENT */}
+      <Box
+        sx={{
+          position: "absolute",
           top: "50%",
           left: "50%",
-
           transform: "translate(-50%, -50%)",
-
           textAlign: "center",
-
           color: "#fff",
-
           width: {
             xs: "90%",
             sm: "85%",
             md: "70%",
             lg: "65%",
           },
+          zIndex: 2,
         }}
       >
-        {/* LOGO */}
-
         <Typography
           sx={{
             fontSize: {
-              xs: "40px",
+              xs: "38px",
               sm: "48px",
-              md: "58px",
-              lg: "64px",
+              md: "60px",
+              lg: "68px",
             },
-
             fontWeight: 900,
-
             letterSpacing: {
-              xs: "4px",
+              xs: "3px",
               md: "6px",
             },
-
             mb: 2,
+            textShadow: "0 4px 20px rgba(0,0,0,.7)",
           }}
         >
           STYLEHUB
         </Typography>
 
-        {/* DESCRIPTION */}
-
         <Typography
           sx={{
             fontSize: {
-              xs: "16px",
+              xs: "15px",
               sm: "17px",
               md: "19px",
               lg: "21px",
             },
-
-            color: "#ddd",
-
+            color: "#fff",
             lineHeight: 1.8,
-
             maxWidth: "620px",
-
             mx: "auto",
+            textShadow: "0 3px 12px rgba(0,0,0,.8)",
           }}
         >
           {t("hero.description")}
         </Typography>
 
-        {/* =====================================================
-            BUTTONS
-        ===================================================== */}
-
+        {/* BUTTONS */}
         <Box
           sx={{
             mt: 4,
-
             display: "flex",
-
             justifyContent: "center",
-
             gap: 2,
-
             flexWrap: "wrap",
           }}
         >
-          {/* SHOP NOW */}
-
           <Button
             component={Link}
             to="/products"
             sx={{
               background: "#556B2F",
-
               color: "#fff",
-
               px: {
                 xs: 4,
                 md: 5,
               },
-
               py: {
                 xs: 1.4,
                 md: 1.7,
               },
-
               fontSize: {
                 xs: "15px",
                 md: "16px",
               },
-
               fontWeight: 700,
-
               borderRadius: "40px",
-
               textTransform: "none",
-
-              boxShadow: "0 12px 30px rgba(0,0,0,.35)",
-
+              boxShadow: "0 12px 30px rgba(0,0,0,.45)",
               transition: ".3s",
 
               "&:hover": {
                 background: "#718B3E",
-
                 transform: "translateY(-3px)",
               },
             }}
@@ -271,47 +248,35 @@ function Hero() {
             {t("hero.shopNow")}
           </Button>
 
-          {/* DISCOVER */}
-
           <Button
             component={Link}
             to="/products"
             variant="outlined"
             sx={{
               borderColor: "#fff",
-
               color: "#fff",
-
               px: {
                 xs: 4,
                 md: 5,
               },
-
               py: {
                 xs: 1.4,
                 md: 1.7,
               },
-
               borderRadius: "40px",
-
               fontSize: {
                 xs: "15px",
                 md: "16px",
               },
-
               fontWeight: 700,
-
               textTransform: "none",
-
               transition: ".3s",
+              background: "rgba(0,0,0,.15)",
 
               "&:hover": {
                 background: "#fff",
-
                 color: "#000",
-
                 borderColor: "#fff",
-
                 transform: "translateY(-3px)",
               },
             }}
@@ -321,23 +286,17 @@ function Hero() {
         </Box>
       </Box>
 
-      {/* =====================================================
-          BOTTOM BLUR
-      ===================================================== */}
-
+      {/* BOTTOM GRADIENT */}
       <Box
         sx={{
           position: "absolute",
-
           bottom: 0,
-
+          left: 0,
           width: "100%",
-
-          height: "120px",
-
-          background: "linear-gradient(to top,#060806,transparent)",
-
+          height: "140px",
+          background: "linear-gradient(to top, #060806, transparent)",
           pointerEvents: "none",
+          zIndex: 1,
         }}
       />
     </Box>
