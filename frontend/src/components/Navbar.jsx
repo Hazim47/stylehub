@@ -579,53 +579,6 @@ function Navbar() {
             )}
 
             {/* =================================================
-                PRODUCTS
-            ================================================= */}
-
-            <IconButton
-              component={Link}
-              to="/products"
-              sx={{
-                width: {
-                  xs: mobileIconSize,
-                  md: 48,
-                },
-
-                height: {
-                  xs: mobileIconSize,
-                  md: 48,
-                },
-
-                minWidth: 0,
-
-                flexShrink: 0,
-
-                border: "1px solid #ddd",
-
-                color: "#000",
-
-                p: 0,
-
-                transition: ".3s",
-
-                "&:hover": {
-                  background: "#000",
-                  color: "#fff",
-                  transform: "translateY(-3px)",
-                },
-              }}
-            >
-              <StorefrontOutlinedIcon
-                sx={{
-                  fontSize: {
-                    xs: mobileIconFontSize,
-                    md: 24,
-                  },
-                }}
-              />
-            </IconButton>
-
-            {/* =================================================
                 CART
             ================================================= */}
 
