@@ -626,7 +626,19 @@ export default function Products() {
       return "/no-image.png";
     }
 
-    return `http://localhost:5000/uploads/products/${product.ProductImages[0].image}`;
+    const image = product.ProductImages[0].image;
+
+    if (!image) {
+      return "/no-image.png";
+    }
+
+    // Cloudinary image
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return image;
+    }
+
+    // Old local image
+    return `http://localhost:5000/uploads/products/${image}`;
   };
   // =====================================================
   // RENDER
