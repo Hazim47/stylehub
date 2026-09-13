@@ -359,12 +359,23 @@ function Navbar() {
 
             position: "static",
 
-            flex: 1,
+            flex: {
+              xs: "1 1 0%",
+              md: 1,
+            },
 
-            minWidth: 0,
+            minWidth: {
+              xs: 0,
+              md: 0,
+            },
 
             mx: {
-              xs: 0.5,
+              xs: 0,
+              md: 0,
+            },
+
+            mr: {
+              xs: 1.5,
               md: 0,
             },
 
@@ -453,7 +464,7 @@ function Navbar() {
 
             minWidth: 0,
             maxWidth: "100%",
-            flexShrink: 1,
+            flexShrink: 0,
             overflow: "visible",
             position: "relative",
             zIndex: 3000,
