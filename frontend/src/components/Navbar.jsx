@@ -7,47 +7,66 @@ import {
   Badge,
   InputBase,
   Button,
+  useMediaQuery,
 } from "@mui/material";
+
 import { FavoriteBorder } from "@mui/icons-material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import ProfileMenu from "../components/ProfileMenu";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+
+import ProfileMenu from "../components/ProfileMenu";
+
 import {
   Link,
   useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+
 import api from "../api/axios";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+
 import { useEffect, useState } from "react";
-import { useMediaQuery } from "@mui/material";
+
 import useCartStore from "../store/cartStore";
 import { useTranslation } from "react-i18next";
+
 function Navbar() {
   const cart = useCartStore((state) => state.cart);
+
   const isMobile = useMediaQuery("(max-width:900px)");
+  const isSmallMobile = useMediaQuery("(max-width:380px)");
+
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const [mobileSearch, setMobileSearch] = useState(false);
   const [search, setSearch] = useState(searchParams.get("search") || "");
+
   const [notificationCount, setNotificationCount] = useState(0);
-  const showHome = location.pathname !== "/";
   const [showNavbar, setShowNavbar] = useState(true);
+
+  const showHome = location.pathname !== "/";
+
   const isMobileSearch = isMobile && location.pathname === "/products";
+
   const { t, i18n } = useTranslation();
+
+  // =========================================================
+  // HIDE / SHOW NAVBAR WHILE SCROLLING
+  // =========================================================
+
   useEffect(() => {
     let lastScroll = 0;
 
     const handleScroll = () => {
       const currentScroll = window.scrollY;
 
-      if (currentScroll > lastScroll) {
+      if (currentScroll > lastScroll && currentScroll > 50) {
         setShowNavbar(false);
       } else {
         setShowNavbar(true);
@@ -62,6 +81,11 @@ function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // =========================================================
+  // LOAD NOTIFICATIONS
+  // =========================================================
+
   useEffect(() => {
     const loadNotifications = async () => {
       try {
@@ -86,38 +110,39 @@ function Navbar() {
 
     const interval = setInterval(() => {
       loadNotifications();
-    }, 5000); // كل 5 ثواني
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Sync input with URL
-  // ===============================
+  // =========================================================
   // SYNC SEARCH WITH URL
-  // ===============================
+  // =========================================================
+
   useEffect(() => {
     const urlSearch = searchParams.get("search") || "";
 
     setSearch((current) => {
-      if (current === urlSearch) return current;
+      if (current === urlSearch) {
+        return current;
+      }
+
       return urlSearch;
     });
   }, [searchParams]);
 
-  // ===============================
+  // =========================================================
   // HANDLE SEARCH
-  // ===============================
+  // =========================================================
+
   useEffect(() => {
     const value = search.trim();
 
     const timer = setTimeout(() => {
-      // =========================
       // SEARCH HAS VALUE
-      // =========================
       if (value) {
         const currentUrlSearch = searchParams.get("search") || "";
 
-        // لا تعمل navigate إذا الرابط أصلًا صحيح
         if (location.pathname !== "/products" || currentUrlSearch !== value) {
           navigate(`/products?search=${encodeURIComponent(value)}`, {
             replace: true,
@@ -127,9 +152,7 @@ function Navbar() {
         return;
       }
 
-      // =========================
       // SEARCH CLEARED
-      // =========================
       if (location.pathname === "/products" && searchParams.has("search")) {
         navigate("/products", {
           replace: true,
@@ -139,16 +162,28 @@ function Navbar() {
 
     return () => clearTimeout(timer);
   }, [search, searchParams, location.pathname, navigate]);
+
+  // =========================================================
+  // RESPONSIVE SIZES
+  // =========================================================
+
+  const mobileIconSize = isSmallMobile ? 31 : 34;
+  const mobileIconFontSize = isSmallMobile ? 19 : 20;
+
   return (
     <AppBar
       position="static"
       elevation={0}
       sx={{
         background: "#fff",
-
         color: "#000",
-
         zIndex: 1200,
+
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
+
+        overflow: "hidden",
 
         height: {
           xs: location.pathname === "/" && !mobileSearch ? "55px" : "110px",
@@ -160,9 +195,15 @@ function Navbar() {
         borderBottom: "1px solid #e8e8e8",
 
         boxShadow: "0 5px 25px rgba(0,0,0,.05)",
+
+        transition: "transform .25s ease",
+
+        transform:
+          !showNavbar && isMobile ? "translateY(-100%)" : "translateY(0)",
       }}
     >
       <Toolbar
+        disableGutters
         sx={{
           minHeight: {
             xs:
@@ -172,23 +213,37 @@ function Navbar() {
             md: "70px !important",
           },
 
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: 0,
+
           px: {
-            xs: 1.5,
+            xs: isSmallMobile ? 0.7 : 1,
             md: 5,
           },
 
           display: "flex",
 
+          alignItems: "center",
+
           justifyContent: "space-between",
 
           gap: {
-            xs: 1,
+            xs: 0.4,
             md: 3,
           },
 
-          overflow: "visible",
+          overflow: "hidden",
+
+          "& > *": {
+            minWidth: 0,
+          },
         }}
       >
+        {/* =====================================================
+            MOBILE SEARCH BACK BUTTON
+        ===================================================== */}
+
         {isMobileSearch && (
           <IconButton
             onClick={() => navigate(-1)}
@@ -197,35 +252,60 @@ function Navbar() {
                 xs: "flex",
                 md: "none",
               },
+
+              flexShrink: 0,
+
+              width: {
+                xs: mobileIconSize,
+                md: 38,
+              },
+
+              height: {
+                xs: mobileIconSize,
+                md: 38,
+              },
+
+              minWidth: 0,
+
               border: "1px solid #ddd",
-              width: 38,
-              height: 38,
+
               color: "#000",
+
+              p: 0,
             }}
           >
-            <ArrowBackIosNewIcon fontSize="small" />
+            <ArrowBackIosNewIcon
+              sx={{
+                fontSize: isSmallMobile ? 16 : 18,
+              }}
+            />
           </IconButton>
         )}
-        {/* LOGO */}
+
+        {/* =====================================================
+            LOGO
+        ===================================================== */}
 
         <Typography
           component={Link}
           to="/"
           sx={{
             fontFamily: "serif",
+
             display: {
               xs: isMobileSearch ? "none" : "block",
               md: "block",
             },
+
             fontSize: {
-              xs: "20px",
+              xs: isSmallMobile ? "18px" : "20px",
               md: "32px",
             },
 
             fontWeight: 900,
 
             letterSpacing: {
-              xs: 2,
+              xs: isSmallMobile ? 1 : 2,
               md: 3,
             },
 
@@ -234,11 +314,21 @@ function Navbar() {
             textDecoration: "none",
 
             lineHeight: 1,
+
+            whiteSpace: "nowrap",
+
+            flexShrink: 1,
+
+            minWidth: 0,
           }}
         >
           STYLEHUB
         </Typography>
-        {/* MOBILE SEARCH BUTTON */}
+
+        {/* =====================================================
+            MOBILE SEARCH BUTTON
+        ===================================================== */}
+
         {location.pathname === "/" && (
           <IconButton
             onClick={() => {
@@ -251,31 +341,52 @@ function Navbar() {
                 md: "none",
               },
 
+              flexShrink: 0,
+
+              width: mobileIconSize,
+              height: mobileIconSize,
+
+              minWidth: 0,
+
               border: "1px solid #ddd",
-              width: 38,
-              height: 38,
+
               color: "#000",
+
+              p: 0,
             }}
           >
-            <SearchIcon />
+            <SearchIcon
+              sx={{
+                fontSize: mobileIconFontSize,
+              }}
+            />
           </IconButton>
         )}
-        {/* SEARCH */}
+
+        {/* =====================================================
+            SEARCH
+        ===================================================== */}
+
         <Box
           sx={{
             display: {
               xs: isMobileSearch ? "flex" : "none",
               md: "flex",
             },
+
             position: "static",
+
             flex: 1,
+
+            minWidth: 0,
+
             mx: {
-              xs: 1,
+              xs: 0.5,
               md: 0,
             },
 
             width: {
-              xs: "calc(100% - 24px)",
+              xs: "auto",
               md: 280,
               lg: 350,
             },
@@ -295,6 +406,8 @@ function Navbar() {
             px: 2,
 
             zIndex: 1300,
+
+            overflow: "hidden",
           }}
         >
           <SearchIcon
@@ -307,6 +420,8 @@ function Navbar() {
               color: "#555",
 
               mr: 1.5,
+
+              flexShrink: 0,
             }}
           />
 
@@ -322,6 +437,12 @@ function Navbar() {
 
               width: "100%",
 
+              minWidth: 0,
+
+              "& input": {
+                minWidth: 0,
+              },
+
               "& input::placeholder": {
                 color: "#999",
                 opacity: 1,
@@ -330,73 +451,166 @@ function Navbar() {
           />
         </Box>
 
-        {/* MENU */}
+        {/* =====================================================
+            RIGHT MENU
+        ===================================================== */}
 
         <Box
           sx={{
             display: "flex",
+
             alignItems: "center",
+
+            justifyContent: "flex-end",
+
             gap: {
-              xs: 0.3,
+              xs: isSmallMobile ? 0.15 : 0.25,
               md: 1,
             },
+
+            minWidth: 0,
+
+            maxWidth: "100%",
+
+            flexShrink: 1,
+
+            overflow: "hidden",
           }}
         >
-          {" "}
+          {/* =================================================
+              MAIN MENU
+          ================================================= */}
+
           <Box
             sx={{
               display: {
                 xs: isMobileSearch ? "none" : "flex",
                 md: "flex",
               },
+
               alignItems: "center",
-              gap: 1,
+
+              justifyContent: "flex-end",
+
+              gap: {
+                xs: isSmallMobile ? 0.15 : 0.25,
+                md: 1,
+              },
+
+              minWidth: 0,
+
+              flexShrink: 1,
             }}
           >
+            {/* =================================================
+                HOME
+            ================================================= */}
+
             {showHome && (
               <Button
                 component={Link}
                 to="/"
-                startIcon={<HomeOutlinedIcon />}
+                startIcon={
+                  <HomeOutlinedIcon
+                    sx={{
+                      fontSize: {
+                        xs: 19,
+                        md: 24,
+                      },
+                    }}
+                  />
+                }
                 sx={{
                   color: "#000",
 
                   fontWeight: 700,
 
-                  fontSize: 16,
+                  fontSize: {
+                    xs: 0,
+                    md: 16,
+                  },
 
                   textTransform: "none",
 
                   borderRadius: 30,
 
-                  px: 2,
+                  minWidth: {
+                    xs: mobileIconSize,
+                    md: "auto",
+                  },
+
+                  width: {
+                    xs: mobileIconSize,
+                    md: "auto",
+                  },
+
+                  height: {
+                    xs: mobileIconSize,
+                    md: "auto",
+                  },
+
+                  p: {
+                    xs: 0,
+                    md: "6px 16px",
+                  },
+
+                  flexShrink: 0,
+
+                  "& .MuiButton-startIcon": {
+                    margin: {
+                      xs: 0,
+                      md: "0 8px 0 0",
+                    },
+                  },
 
                   "&:hover": {
                     background: "#000",
-
                     color: "#fff",
                   },
                 }}
               >
-                {t("navbar.home")}
+                <Box
+                  component="span"
+                  sx={{
+                    display: {
+                      xs: "none",
+                      md: "inline",
+                    },
+                  }}
+                >
+                  {t("navbar.home")}
+                </Box>
               </Button>
             )}
+
+            {/* =================================================
+                PRODUCTS
+            ================================================= */}
 
             <IconButton
               component={Link}
               to="/products"
               sx={{
                 width: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
 
                 height: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
+
+                minWidth: 0,
+
+                flexShrink: 0,
+
                 border: "1px solid #ddd",
+
                 color: "#000",
+
+                p: 0,
+
                 transition: ".3s",
 
                 "&:hover": {
@@ -406,96 +620,163 @@ function Navbar() {
                 },
               }}
             >
-              <StorefrontOutlinedIcon sx={{ fontSize: 24 }} />
+              <StorefrontOutlinedIcon
+                sx={{
+                  fontSize: {
+                    xs: mobileIconFontSize,
+                    md: 24,
+                  },
+                }}
+              />
             </IconButton>
+
+            {/* =================================================
+                CART
+            ================================================= */}
 
             <IconButton
               component={Link}
               to="/cart"
               sx={{
                 width: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
 
                 height: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
+
+                minWidth: 0,
+
+                flexShrink: 0,
 
                 border: "1px solid #ddd",
 
                 color: "#000",
 
+                p: 0,
+
                 transition: ".3s",
 
                 "&:hover": {
                   background: "#000",
-
                   color: "#fff",
-
                   transform: "translateY(-3px)",
                 },
               }}
             >
-              <Badge badgeContent={cart.length} color="error">
+              <Badge
+                badgeContent={cart.length}
+                color="error"
+                sx={{
+                  "& .MuiBadge-badge": {
+                    fontSize: {
+                      xs: 8,
+                      md: 10,
+                    },
+
+                    minWidth: {
+                      xs: 14,
+                      md: 18,
+                    },
+
+                    height: {
+                      xs: 14,
+                      md: 18,
+                    },
+
+                    padding: 0,
+                  },
+                }}
+              >
                 <ShoppingCartOutlinedIcon
                   sx={{
-                    fontSize: 24,
+                    fontSize: {
+                      xs: mobileIconFontSize,
+                      md: 24,
+                    },
                   }}
                 />
               </Badge>
             </IconButton>
+
+            {/* =================================================
+                FAVORITES
+            ================================================= */}
+
             <IconButton
               component={Link}
               to="/favorites"
               sx={{
                 width: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
 
                 height: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
+
+                minWidth: 0,
+
+                flexShrink: 0,
 
                 border: "1px solid #ddd",
 
                 color: "#000",
 
+                p: 0,
+
                 transition: ".3s",
 
                 "&:hover": {
                   background: "#000",
-
                   color: "#fff",
-
                   transform: "translateY(-3px)",
                 },
               }}
             >
               <FavoriteBorder
                 sx={{
-                  fontSize: 24,
+                  fontSize: {
+                    xs: mobileIconFontSize,
+                    md: 24,
+                  },
                 }}
               />
             </IconButton>
+
+            {/* =================================================
+                NOTIFICATIONS
+            ================================================= */}
+
             <IconButton
               component={Link}
               to="/notifications"
               sx={{
                 width: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
 
                 height: {
-                  xs: 38,
+                  xs: mobileIconSize,
                   md: 44,
                 },
+
+                minWidth: 0,
+
+                flexShrink: 0,
+
                 border: "1px solid #ddd",
+
                 color: "#000",
+
+                p: 0,
+
                 transition: ".3s",
 
                 "&:hover": {
@@ -505,27 +786,84 @@ function Navbar() {
                 },
               }}
             >
-              <Badge badgeContent={notificationCount} color="error">
+              <Badge
+                badgeContent={notificationCount}
+                color="error"
+                sx={{
+                  "& .MuiBadge-badge": {
+                    fontSize: {
+                      xs: 8,
+                      md: 10,
+                    },
+
+                    minWidth: {
+                      xs: 14,
+                      md: 18,
+                    },
+
+                    height: {
+                      xs: 14,
+                      md: 18,
+                    },
+
+                    padding: 0,
+                  },
+                }}
+              >
                 <NotificationsNoneOutlinedIcon
                   sx={{
-                    fontSize: 24,
+                    fontSize: {
+                      xs: mobileIconFontSize,
+                      md: 24,
+                    },
                   }}
                 />
               </Badge>
             </IconButton>
+
+            {/* =================================================
+                LANGUAGE
+            ================================================= */}
+
             <Button
               onClick={() => {
                 const newLang = i18n.language === "ar" ? "en" : "ar";
                 i18n.changeLanguage(newLang);
               }}
               sx={{
-                minWidth: 45,
-                height: 38,
+                minWidth: {
+                  xs: mobileIconSize,
+                  md: 44,
+                },
+
+                width: {
+                  xs: mobileIconSize,
+                  md: 44,
+                },
+
+                height: {
+                  xs: mobileIconSize,
+                  md: 44,
+                },
+
                 border: "1px solid #ddd",
-                borderRadius: "25px",
+
+                borderRadius: "50%",
+
                 color: "#000",
+
                 fontWeight: 700,
+
+                fontSize: {
+                  xs: 10,
+                  md: 14,
+                },
+
                 textTransform: "none",
+
+                padding: 0,
+
+                flexShrink: 0,
 
                 "&:hover": {
                   background: "#000",
@@ -536,7 +874,43 @@ function Navbar() {
               {i18n.language === "ar" ? "EN" : "AR"}
             </Button>
           </Box>
-          <ProfileMenu />
+
+          {/* ===================================================
+              PROFILE
+          =================================================== */}
+          <Box
+            sx={{
+              flexShrink: 0,
+
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+
+              minWidth: {
+                xs: 0,
+                md: 125,
+              },
+
+              height: {
+                xs: mobileIconSize,
+                md: 44,
+              },
+
+              "& > *": {
+                maxWidth: {
+                  xs: "100%",
+                  md: "125px",
+                },
+
+                width: {
+                  xs: "auto",
+                  md: "100%",
+                },
+              },
+            }}
+          >
+            <ProfileMenu />
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

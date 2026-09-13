@@ -94,12 +94,12 @@ export default function ProfileMenu() {
         sx={{
           width: {
             xs: 42,
-            md: 50,
+            md: 44,
           },
 
           height: {
             xs: 42,
-            md: 50,
+            md: 44,
           },
 
           border: "1px solid #ddd",
@@ -122,7 +122,6 @@ export default function ProfileMenu() {
             src={user.picture}
             sx={{
               width: "100%",
-
               height: "100%",
             }}
           />
@@ -130,7 +129,6 @@ export default function ProfileMenu() {
           <PersonOutlineOutlinedIcon
             sx={{
               fontSize: 32,
-
               color: "#000",
             }}
           />
