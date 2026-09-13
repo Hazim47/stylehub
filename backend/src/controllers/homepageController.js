@@ -1,6 +1,5 @@
 const { HomepageSettings } = require("../models");
-const fs = require("fs/promises");
-const path = require("path");
+const cloudinary = require("../config/cloudinary");
 
 // ======================================================
 // ALLOWED IMAGE FIELDS
@@ -14,6 +13,12 @@ const ALLOWED_FIELDS = [
   "autumnImage",
   "winterImage",
 ];
+
+// ======================================================
+// CLOUDINARY FOLDER
+// ======================================================
+
+const CLOUDINARY_FOLDER = "stylehub/homepage";
 
 // ======================================================
 // GET /api/homepage
@@ -36,6 +41,60 @@ const getHomepage = async (req, res) => {
       message: "Failed to get homepage settings",
       error: error.message,
     });
+  }
+};
+
+// ======================================================
+// UPLOAD BUFFER TO CLOUDINARY
+// ======================================================
+
+const uploadToCloudinary = (buffer, field) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: CLOUDINARY_FOLDER,
+
+        // اسم ثابت لكل صورة Homepage
+        // بحيث نستبدل الصورة القديمة بدل إنشاء نسخ كثيرة
+        public_id: field,
+
+        resource_type: "image",
+
+        // يستبدل الصورة القديمة بنفس public_id
+        overwrite: true,
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      },
+    );
+
+    uploadStream.end(buffer);
+  });
+};
+
+// ======================================================
+// DELETE CLOUDINARY IMAGE
+// ======================================================
+
+const deleteFromCloudinary = async (field) => {
+  try {
+    const publicId = `${CLOUDINARY_FOLDER}/${field}`;
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: "image",
+    });
+
+    console.log(`Cloudinary delete result for ${field}:`, result.result);
+
+    return result;
+  } catch (error) {
+    console.error(`CLOUDINARY DELETE ERROR (${field}):`, error);
+
+    return null;
   }
 };
 
@@ -79,41 +138,21 @@ const uploadHomepageImage = async (req, res) => {
     }
 
     // --------------------------------------------------
-    // Delete old image
+    // Upload to Cloudinary
     // --------------------------------------------------
 
-    const oldImage = homepage[field];
+    const result = await uploadToCloudinary(req.file.buffer, field);
 
-    if (oldImage) {
-      try {
-        const oldFileName = path.basename(oldImage);
+    console.log(`Homepage image uploaded to Cloudinary: ${field}`);
 
-        const oldFilePath = path.join(
-          __dirname,
-          "..",
-          "uploads",
-          "homepage",
-          oldFileName,
-        );
-
-        await fs.unlink(oldFilePath);
-
-        console.log("Old homepage image deleted:", oldFileName);
-      } catch (error) {
-        console.log("Old homepage image not found:", error.message);
-      }
-    }
+    console.log("Cloudinary URL:", result.secure_url);
 
     // --------------------------------------------------
-    // Build image URL
-    // --------------------------------------------------
-    const imageUrl = `https://${req.get("host")}/uploads/homepage/${req.file.filename}`;
-    // --------------------------------------------------
-    // Save image URL
+    // Save Cloudinary URL
     // --------------------------------------------------
 
     await homepage.update({
-      [field]: imageUrl,
+      [field]: result.secure_url,
     });
 
     // --------------------------------------------------
@@ -125,7 +164,7 @@ const uploadHomepageImage = async (req, res) => {
 
       field,
 
-      image: imageUrl,
+      image: result.secure_url,
 
       homepage,
     });
@@ -182,38 +221,28 @@ const deleteHomepageImage = async (req, res) => {
     }
 
     // --------------------------------------------------
-    // Delete physical file
+    // Delete from Cloudinary
     // --------------------------------------------------
 
-    try {
-      const fileName = path.basename(image);
-
-      const filePath = path.join(
-        __dirname,
-        "..",
-        "uploads",
-        "homepage",
-        fileName,
-      );
-
-      await fs.unlink(filePath);
-
-      console.log("Homepage image deleted:", fileName);
-    } catch (error) {
-      console.log("Could not delete physical image:", error.message);
-    }
+    await deleteFromCloudinary(field);
 
     // --------------------------------------------------
-    // Remove from database
+    // Remove URL from database
     // --------------------------------------------------
 
     await homepage.update({
       [field]: null,
     });
 
+    // --------------------------------------------------
+    // Response
+    // --------------------------------------------------
+
     res.status(200).json({
       message: "Homepage image deleted successfully",
+
       field,
+
       homepage,
     });
   } catch (error) {
@@ -225,6 +254,10 @@ const deleteHomepageImage = async (req, res) => {
     });
   }
 };
+
+// ======================================================
+// EXPORTS
+// ======================================================
 
 module.exports = {
   getHomepage,
