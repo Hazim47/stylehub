@@ -107,11 +107,7 @@ const uploadHomepageImage = async (req, res) => {
     // --------------------------------------------------
     // Build image URL
     // --------------------------------------------------
-
-    const imageUrl = `${req.protocol}://${req.get(
-      "host",
-    )}/uploads/homepage/${req.file.filename}`;
-
+    const imageUrl = `https://${req.get("host")}/uploads/homepage/${req.file.filename}`;
     // --------------------------------------------------
     // Save image URL
     // --------------------------------------------------
