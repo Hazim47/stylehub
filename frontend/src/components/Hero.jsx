@@ -43,11 +43,6 @@ function Hero() {
   const heroImage1 = getImageUrl(homepage?.heroImage1);
   const heroImage2 = getImageUrl(homepage?.heroImage2);
 
-  console.log("HOMEPAGE DATA:", homepage);
-  console.log("HERO IMAGE 1:", heroImage1);
-  console.log("HERO IMAGE 2:", heroImage2);
-  console.log("BASE URL:", API.defaults.baseURL);
-
   return (
     <Box
       sx={{

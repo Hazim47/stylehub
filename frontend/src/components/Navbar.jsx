@@ -178,30 +178,23 @@ function Navbar() {
         background: "#fff",
         color: "#000",
         zIndex: 1200,
-
-        width: "100%",
-        maxWidth: "100%",
-        minWidth: 0,
-
-        overflow: "hidden",
-
-        height: {
-          xs: location.pathname === "/" && !mobileSearch ? "55px" : "110px",
-          md: "70px",
-        },
-
-        justifyContent: "center",
-
-        borderBottom: "1px solid #e8e8e8",
-
-        boxShadow: "0 5px 25px rgba(0,0,0,.05)",
-
-        transition: "transform .25s ease",
-
-        transform:
-          !showNavbar && isMobile ? "translateY(-100%)" : "translateY(0)",
+        // باقي الـ sx كما هو
       }}
     >
+      <Typography
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 99999,
+          background: "red",
+          color: "white",
+          p: 1,
+          fontSize: 14,
+        }}
+      >
+        {window.innerWidth}px
+      </Typography>
       <Toolbar
         disableGutters
         sx={{
