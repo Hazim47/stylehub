@@ -1,6 +1,9 @@
 const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
+const fsPromises = require("fs/promises");
+
+const cloudinary = require("../config/cloudinary");
 
 const resizeProductImages = async (req, res, next) => {
   try {
@@ -22,6 +25,10 @@ const resizeProductImages = async (req, res, next) => {
         newFilename,
       );
 
+      // --------------------------------------------------
+      // RESIZE + CONVERT TO WEBP
+      // --------------------------------------------------
+
       await sharp(inputPath)
         .resize(600, 800, {
           fit: "cover",
@@ -32,20 +39,45 @@ const resizeProductImages = async (req, res, next) => {
         })
         .toFile(outputPath);
 
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          fs.unlink(inputPath, (err) => {
-            if (err) {
-              console.log("Original image delete skipped:", err.message);
-            }
-            resolve();
-          });
-        }, 500);
+      // --------------------------------------------------
+      // UPLOAD TO CLOUDINARY
+      // --------------------------------------------------
+
+      const result = await cloudinary.uploader.upload(outputPath, {
+        folder: "stylehub/products",
+        resource_type: "image",
+        format: "webp",
       });
+
+      // --------------------------------------------------
+      // DELETE LOCAL FILES
+      // --------------------------------------------------
+
+      try {
+        await fsPromises.unlink(inputPath);
+      } catch (error) {
+        if (error.code !== "ENOENT") {
+          console.log("Original image delete skipped:", error.message);
+        }
+      }
+
+      try {
+        await fsPromises.unlink(outputPath);
+      } catch (error) {
+        if (error.code !== "ENOENT") {
+          console.log("Processed image delete skipped:", error.message);
+        }
+      }
+
+      // --------------------------------------------------
+      // SAVE CLOUDINARY DATA
+      // --------------------------------------------------
 
       newFiles.push({
         ...file,
-        filename: newFilename,
+        filename: result.secure_url,
+        cloudinaryUrl: result.secure_url,
+        cloudinaryPublicId: result.public_id,
       });
     }
 
@@ -53,6 +85,8 @@ const resizeProductImages = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error("PRODUCT IMAGE UPLOAD ERROR:", error);
+
     next(error);
   }
 };

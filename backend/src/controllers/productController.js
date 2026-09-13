@@ -5,6 +5,8 @@ const fs = require("fs/promises");
 const path = require("path");
 const crypto = require("crypto");
 
+const cloudinary = require("../config/cloudinary");
+
 // ======================================================
 // CONFIG
 // ======================================================
@@ -90,6 +92,10 @@ function generateSKU() {
   return `STH-${crypto.randomBytes(5).toString("hex").toUpperCase()}`;
 }
 
+// ======================================================
+// DELETE PRODUCT IMAGES
+// ======================================================
+
 async function deleteProductImages(images = []) {
   if (!images.length) {
     return;
@@ -100,6 +106,49 @@ async function deleteProductImages(images = []) {
       if (!img?.image) {
         return;
       }
+
+      // --------------------------------------------------
+      // CLOUDINARY IMAGE
+      // --------------------------------------------------
+
+      if (img.image.includes("res.cloudinary.com")) {
+        try {
+          const url = new URL(img.image);
+
+          const uploadIndex = url.pathname.indexOf("/upload/");
+
+          if (uploadIndex !== -1) {
+            let publicPath = url.pathname.substring(
+              uploadIndex + "/upload/".length,
+            );
+
+            // Remove transformations such as:
+            // /f_auto,q_auto/
+            const parts = publicPath.split("/");
+
+            const versionIndex = parts.findIndex((part) => /^v\d+$/.test(part));
+
+            if (versionIndex !== -1) {
+              publicPath = parts.slice(versionIndex + 1).join("/");
+            }
+
+            // Remove file extension
+            publicPath = publicPath.replace(/\.[^/.]+$/, "");
+
+            await cloudinary.uploader.destroy(publicPath, {
+              resource_type: "image",
+            });
+
+            return;
+          }
+        } catch (error) {
+          console.error("Failed to delete Cloudinary product image:", error);
+        }
+      }
+
+      // --------------------------------------------------
+      // OLD LOCAL IMAGE
+      // --------------------------------------------------
 
       const filePath = path.join(PRODUCT_IMAGES_DIR, path.basename(img.image));
 
@@ -283,9 +332,6 @@ const getProducts = async (req, res) => {
       offset,
 
       order: getSortOrder(sort),
-
-      // Only fetch what frontend actually needs
-      // Uncomment/add attributes according to your model.
     });
 
     return res.status(200).json({
@@ -359,6 +405,7 @@ const getProduct = async (req, res) => {
     });
   }
 };
+
 // ======================================================
 // CREATE PRODUCT
 // ======================================================
@@ -463,7 +510,7 @@ const createProduct = async (req, res) => {
     if (req.files?.length) {
       const images = req.files.map((file) => ({
         productId: product.id,
-        image: file.filename,
+        image: file.cloudinaryUrl || file.filename,
       }));
 
       await ProductImage.bulkCreate(images, {
@@ -491,7 +538,9 @@ const createProduct = async (req, res) => {
       product: result,
     });
   } catch (error) {
-    await transaction.rollback();
+    try {
+      await transaction.rollback();
+    } catch {}
 
     console.error("CREATE PRODUCT ERROR:", error);
 
@@ -679,7 +728,7 @@ const updateProduct = async (req, res) => {
 
       const images = req.files.map((file) => ({
         productId: product.id,
-        image: file.filename,
+        image: file.cloudinaryUrl || file.filename,
       }));
 
       await ProductImage.bulkCreate(images, {
@@ -688,7 +737,7 @@ const updateProduct = async (req, res) => {
 
       await transaction.commit();
 
-      // Delete physical files AFTER DB transaction succeeds
+      // Delete old images AFTER DB transaction succeeds
       await deleteProductImages(oldImages);
     } else {
       await transaction.commit();
@@ -777,7 +826,7 @@ const deleteProduct = async (req, res) => {
 
     await transaction.commit();
 
-    // Delete physical files after successful DB transaction
+    // Delete images after successful DB transaction
     await deleteProductImages(images);
 
     return res.status(200).json({
