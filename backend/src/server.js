@@ -17,9 +17,7 @@ async function startServer() {
     console.log("✅ Database Connected");
 
     // مزامنة الجداول
-    await sequelize.sync({
-      alter: true,
-    });
+    await sequelize.sync();
 
     console.log("✅ Database Synced");
 
