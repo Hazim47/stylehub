@@ -16,7 +16,6 @@ export default function Products() {
   const { t } = useTranslation();
 
   const [products, setProducts] = useState([]);
-
   const [category, setCategory] = useState("NEW IN");
 
   const [page, setPage] = useState(1);
@@ -27,6 +26,37 @@ export default function Products() {
   const [searchParams] = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
+
+  // =========================================================
+  // CATEGORIES
+  // =========================================================
+
+  const categories = [
+    {
+      label: t("products.newIn"),
+      value: "NEW IN",
+    },
+    {
+      label: t("products.clothing"),
+      value: "طقم",
+    },
+    {
+      label: t("products.shoes"),
+      value: "بوت",
+    },
+    {
+      label: t("products.tops"),
+      value: "بلوزة",
+    },
+    {
+      label: t("products.shirts"),
+      value: "قميص",
+    },
+    {
+      label: t("products.trousers"),
+      value: "بنطلون",
+    },
+  ];
 
   // =========================================================
   // READ SEARCH + CATEGORY FROM URL
@@ -46,7 +76,7 @@ export default function Products() {
   }, [searchParams]);
 
   // =========================================================
-  // RESET PAGE WHEN SEARCH OR CATEGORY CHANGES
+  // RESET PAGE WHEN SEARCH / CATEGORY CHANGES
   // =========================================================
 
   useEffect(() => {
@@ -75,7 +105,6 @@ export default function Products() {
         search,
       };
 
-      // NEW IN = newest products
       if (category !== "NEW IN") {
         params.category = category;
       } else {
@@ -98,39 +127,57 @@ export default function Products() {
   };
 
   // =========================================================
-  // FETCH PRODUCTS
+  // FETCH
   // =========================================================
 
   useEffect(() => {
     loadProducts();
   }, [category, page, search]);
 
-  // =========================================================
-  // DISPLAYED PRODUCTS
-  // =========================================================
-
   const displayedProducts = products;
 
   // =========================================================
-  // PAGE TITLE
+  // CATEGORY CLICK
   // =========================================================
 
-  const getCategoryTitle = () => {
-    if (search) {
-      return `"${search}"`;
-    }
-
-    return category;
+  const handleCategoryClick = (value) => {
+    setCategory(value);
+    setPage(1);
   };
 
   return (
     <Box className="products-page">
       {/* =====================================================
+          CATEGORY BAR - MOBILE ONLY
+      ====================================================== */}
+
+      <Box className="category-wrapper mobile-categories">
+        <Box className="category-bar">
+          {categories.map((item) => (
+            <button
+              key={item.value}
+              className={
+                category === item.value ? "category-btn active" : "category-btn"
+              }
+              onClick={() => handleCategoryClick(item.value)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </Box>
+      </Box>
+
+      {/* =====================================================
           HEADER
       ====================================================== */}
 
       <Box className="section-header">
-        <Typography className="section-title">{getCategoryTitle()}</Typography>
+        <Typography className="section-title">
+          {search
+            ? `"${search}"`
+            : categories.find((item) => item.value === category)?.label ||
+              category}
+        </Typography>
 
         <Typography className="section-count">
           {displayedProducts.length} {t("products.products")}

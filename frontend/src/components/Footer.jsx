@@ -7,265 +7,404 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import { Link } from "react-router-dom";
-
 import { useTranslation } from "react-i18next";
 
 function Footer() {
   const { t } = useTranslation();
 
+  const storeLinks = [
+    {
+      icon: HomeOutlinedIcon,
+      path: "/",
+      title: t("home"),
+    },
+    {
+      icon: ShoppingBagOutlinedIcon,
+      path: "/products",
+      title: t("product"),
+    },
+    {
+      icon: ShoppingCartOutlinedIcon,
+      path: "/cart",
+      title: t("carts"),
+    },
+  ];
+
+  const socialLinks = [
+    {
+      icon: InstagramIcon,
+      link: "https://www.instagram.com/hazim_alqaralleh/?hl=ar",
+      label: "Instagram",
+    },
+    {
+      icon: FacebookIcon,
+      link: "https://www.facebook.com/hazim.al.qaralleh?locale=ar_AR",
+      label: "Facebook",
+    },
+    {
+      icon: WhatsAppIcon,
+      link: "https://wa.me/962782333118",
+      label: "WhatsApp",
+    },
+  ];
+
   return (
     <Box
+      component="footer"
       sx={{
+        mt: { xs: 7, md: 10 },
         background: "#fff",
-
-        color: "#000",
-
-        px: { xs: 3, md: 7 },
-
-        pt: 5,
-
-        pb: 2,
-
-        mt: 8,
-
-        borderTop: "1px solid #eee",
+        color: "#111",
+        borderTop: "1px solid #e8e8e8",
       }}
     >
-      <Grid container spacing={4}>
-        {/* BRAND */}
+      {/* =====================================================
+          MAIN FOOTER
+      ====================================================== */}
 
-        <Grid item xs={12} md={5}>
-          <Typography
-            sx={{
-              fontSize: { xs: 32, md: 38 },
-
-              fontWeight: 1000,
-
-              letterSpacing: 4,
-            }}
-          >
-            StyleHub
-          </Typography>
-
-          <Typography
-            sx={{
-              mt: 1.5,
-
-              color: "#777",
-
-              fontSize: 14,
-
-              lineHeight: 1.8,
-
-              maxWidth: 330,
-            }}
-          >
-            {t("footer.description")}
-          </Typography>
-
-          <Box mt={2.5} display="flex" gap={1}>
-            {[
-              {
-                icon: InstagramIcon,
-
-                link: "https://www.instagram.com/hazim_alqaralleh/?hl=ar",
-              },
-
-              {
-                icon: FacebookIcon,
-
-                link: "https://www.facebook.com/hazim.al.qaralleh?locale=ar_AR",
-              },
-
-              {
-                icon: WhatsAppIcon,
-
-                link: "https://wa.me/962782333118",
-              },
-            ].map(({ icon: Icon, link }) => (
-              <IconButton
-                key={link}
-                component="a"
-                href={link}
-                target="_blank"
-                sx={{
-                  width: 38,
-
-                  height: 38,
-
-                  border: "1px solid #ddd",
-
-                  color: "#111",
-
-                  transition: ".3s",
-
-                  "&:hover": {
-                    background: "#000",
-
-                    color: "#fff",
-
-                    transform: "translateY(-3px)",
-                  },
-                }}
-              >
-                <Icon sx={{ fontSize: 19 }} />
-              </IconButton>
-            ))}
-          </Box>
-        </Grid>
-
-        {/* LINKS */}
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography
-            sx={{
-              fontSize: 18,
-
-              fontWeight: 900,
-
-              mb: 2,
-            }}
-          >
-            {t("footer.store")}
-          </Typography>
-
-          {[
-            {
-              icon: HomeOutlinedIcon,
-
-              path: "/",
-
-              title: t("home"),
-            },
-
-            {
-              icon: ShoppingBagOutlinedIcon,
-
-              path: "/products",
-
-              title: t("product"),
-            },
-
-            {
-              icon: ShoppingCartOutlinedIcon,
-
-              path: "/cart",
-
-              title: t("carts"),
-            },
-          ].map(({ icon: Icon, path, title }) => (
-            <Box
-              key={path}
-              component={Link}
-              to={path}
-              sx={{
-                display: "flex",
-
-                alignItems: "center",
-
-                gap: 1.2,
-
-                mb: 1.3,
-
-                textDecoration: "none",
-
-                color: "#666",
-
-                transition: ".3s",
-
-                "&:hover": {
-                  color: "#000",
-
-                  transform: "translateX(5px)",
-                },
-              }}
-            >
-              <Icon sx={{ fontSize: 20 }} />
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-                }}
-              >
-                {title}
-              </Typography>
-            </Box>
-          ))}
-        </Grid>
-
-        {/* CONTACT */}
-
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography
-            sx={{
-              fontSize: 18,
-
-              fontWeight: 900,
-
-              mb: 2,
-            }}
-          >
-            {t("footer.contact")}
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#666",
-
-              fontSize: 14,
-
-              mb: 1.2,
-            }}
-          >
-            📞 0782333118
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#666",
-
-              fontSize: 14,
-
-              mb: 1.2,
-            }}
-          >
-            ✉ support@stylehub.com
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#666",
-
-              fontSize: 14,
-            }}
-          >
-            📍 {t("footer.country")}
-          </Typography>
-        </Grid>
-      </Grid>
-
-      <Divider
+      <Box
         sx={{
-          my: 3,
-
-          borderColor: "#eee",
-        }}
-      />
-
-      <Typography
-        textAlign="center"
-        sx={{
-          color: "#888",
-
-          fontSize: 12,
-
-          letterSpacing: 0.5,
+          maxWidth: 1400,
+          mx: "auto",
+          px: { xs: 3, sm: 5, md: 7, lg: 9 },
+          pt: { xs: 5, md: 7 },
+          pb: { xs: 4, md: 6 },
         }}
       >
-        © 2026 StyleHub - {t("footer.rights")}
-      </Typography>
+        <Grid container spacing={{ xs: 5, md: 8 }}>
+          {/* =================================================
+              BRAND
+          ================================================== */}
+
+          <Grid item xs={12} md={5}>
+            <Typography
+              component={Link}
+              to="/"
+              sx={{
+                display: "inline-block",
+                color: "#111",
+                textDecoration: "none",
+                fontSize: { xs: 34, md: 42 },
+                fontWeight: 1000,
+                letterSpacing: { xs: 5, md: 7 },
+                lineHeight: 1,
+              }}
+            >
+              ZYA
+            </Typography>
+
+            {/* SMALL LINE */}
+
+            <Box
+              sx={{
+                width: 42,
+                height: 2,
+                background: "#111",
+                mt: 2,
+                mb: 2.2,
+              }}
+            />
+
+            <Typography
+              sx={{
+                maxWidth: 390,
+                color: "#666",
+                fontSize: { xs: 13, md: 14 },
+                lineHeight: 1.9,
+              }}
+            >
+              {t("footer.description")}
+            </Typography>
+
+            {/* SOCIAL */}
+
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                mt: 3,
+              }}
+            >
+              {socialLinks.map(({ icon: Icon, link, label }) => (
+                <IconButton
+                  key={link}
+                  component="a"
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  sx={{
+                    width: 38,
+                    height: 38,
+                    border: "1px solid #ddd",
+                    borderRadius: "50%",
+                    color: "#222",
+                    transition: "all .25s ease",
+
+                    "& svg": {
+                      fontSize: 18,
+                    },
+
+                    "&:hover": {
+                      background: "#111",
+                      color: "#fff",
+                      borderColor: "#111",
+                      transform: "translateY(-3px)",
+                    },
+                  }}
+                >
+                  <Icon />
+                </IconButton>
+              ))}
+            </Box>
+          </Grid>
+
+          {/* =================================================
+              STORE
+          ================================================== */}
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Typography
+              sx={{
+                fontSize: 13,
+                fontWeight: 800,
+                letterSpacing: 1.5,
+                mb: 2.5,
+                textTransform: "uppercase",
+              }}
+            >
+              {t("footer.store")}
+            </Typography>
+
+            <Box>
+              {storeLinks.map(({ icon: Icon, path, title }) => (
+                <Box
+                  key={path}
+                  component={Link}
+                  to={path}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    maxWidth: 190,
+                    py: 0.8,
+                    color: "#666",
+                    textDecoration: "none",
+                    transition: "all .25s ease",
+
+                    "& .footer-link-left": {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1.2,
+                    },
+
+                    "& .footer-arrow": {
+                      opacity: 0,
+                      transform: "translateX(-4px)",
+                      transition: "all .25s ease",
+                    },
+
+                    "&:hover": {
+                      color: "#111",
+                    },
+
+                    "&:hover .footer-arrow": {
+                      opacity: 1,
+                      transform: "translateX(0)",
+                    },
+                  }}
+                >
+                  <Box className="footer-link-left">
+                    <Icon
+                      sx={{
+                        fontSize: 19,
+                        color: "inherit",
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: 14,
+                        color: "inherit",
+                      }}
+                    >
+                      {title}
+                    </Typography>
+                  </Box>
+
+                  <ArrowForwardIosIcon
+                    className="footer-arrow"
+                    sx={{
+                      fontSize: 11,
+                    }}
+                  />
+                </Box>
+              ))}
+            </Box>
+          </Grid>
+
+          {/* =================================================
+              CONTACT
+          ================================================== */}
+
+          <Grid item xs={12} sm={6} md={4}>
+            <Typography
+              sx={{
+                fontSize: 13,
+                fontWeight: 800,
+                letterSpacing: 1.5,
+                mb: 2.5,
+                textTransform: "uppercase",
+              }}
+            >
+              {t("footer.contact")}
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1.4,
+              }}
+            >
+              <Box>
+                <Typography
+                  sx={{
+                    color: "#999",
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    mb: 0.3,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Phone
+                </Typography>
+
+                <Typography
+                  component="a"
+                  href="tel:+962782333118"
+                  sx={{
+                    color: "#444",
+                    fontSize: 14,
+                    textDecoration: "none",
+                    transition: ".2s",
+
+                    "&:hover": {
+                      color: "#000",
+                    },
+                  }}
+                >
+                  078 233 3118
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography
+                  sx={{
+                    color: "#999",
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    mb: 0.3,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Email
+                </Typography>
+
+                <Typography
+                  component="a"
+                  href="mailto:support@zya.com"
+                  sx={{
+                    color: "#444",
+                    fontSize: 14,
+                    textDecoration: "none",
+                    transition: ".2s",
+
+                    "&:hover": {
+                      color: "#000",
+                    },
+                  }}
+                >
+                  support@zya.com
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography
+                  sx={{
+                    color: "#999",
+                    fontSize: 11,
+                    letterSpacing: 1,
+                    mb: 0.3,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Location
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: "#444",
+                    fontSize: 14,
+                  }}
+                >
+                  {t("footer.country")}
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+      {/* =====================================================
+          BOTTOM
+      ====================================================== */}
+
+      <Box
+        sx={{
+          borderTop: "1px solid #eee",
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 1400,
+            mx: "auto",
+            px: { xs: 3, sm: 5, md: 7, lg: 9 },
+            py: 2.3,
+
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 1, sm: 0 },
+          }}
+        >
+          <Typography
+            sx={{
+              color: "#999",
+              fontSize: 11,
+              letterSpacing: 0.5,
+            }}
+          >
+            © 2026 ZYA — {t("footer.rights")}
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#aaa",
+              fontSize: 10,
+              letterSpacing: 1.2,
+              textTransform: "uppercase",
+            }}
+          >
+            Fashion · Style · ZYA
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   );
 }

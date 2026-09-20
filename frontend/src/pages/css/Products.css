@@ -604,3 +604,16 @@
     font-size: 26px !important;
   }
 }
+/* =========================================================
+   CATEGORIES - MOBILE ONLY
+========================================================= */
+
+.mobile-categories {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-categories {
+    display: block;
+  }
+}

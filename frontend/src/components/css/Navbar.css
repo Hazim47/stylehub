@@ -1088,3 +1088,30 @@ body,
     padding: 35px;
   }
 }
+/* =========================================================
+   PROFILE SIZE
+========================================================= */
+
+.zya-mobile-profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zya-mobile-profile-icon button,
+.zya-mobile-profile-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.zya-desktop-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zya-desktop-profile button,
+.zya-desktop-profile svg {
+  width: 35px;
+  height: 35px;
+}
