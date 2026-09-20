@@ -8,7 +8,12 @@ function MainLayout() {
     <>
       <Navbar />
 
-      <main className="main-content">
+      <main
+        className="main-content"
+        style={{
+          paddingTop: "80px",
+        }}
+      >
         <Outlet />
       </main>
 

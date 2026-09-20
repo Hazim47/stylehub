@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { Box, Typography, Grid, CircularProgress } from "@mui/material";
+
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
+
 import API from "../api/axios";
 import ProductCard from "../components/ProductCard";
+
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -25,43 +28,42 @@ export default function Products() {
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
 
+  // =========================================================
+  // READ SEARCH + CATEGORY FROM URL
+  // =========================================================
+
   useEffect(() => {
-    setSearch(searchParams.get("search") || "");
+    const urlSearch = searchParams.get("search") || "";
+    const urlCategory = searchParams.get("category");
+
+    setSearch(urlSearch);
+
+    if (urlCategory) {
+      setCategory(urlCategory);
+    } else {
+      setCategory("NEW IN");
+    }
   }, [searchParams]);
+
+  // =========================================================
+  // RESET PAGE WHEN SEARCH OR CATEGORY CHANGES
+  // =========================================================
+
   useEffect(() => {
     setPage(1);
-  }, [search]);
+  }, [search, category]);
 
-  const categories = [
-    {
-      label: t("products.newIn"),
-      value: "NEW IN",
-    },
-    {
-      label: t("products.clothing"),
-      value: "طقم",
-    },
-    {
-      label: t("products.shoes"),
-      value: "بوت",
-    },
-    {
-      label: t("products.tops"),
-      value: "بلوزة",
-    },
-    {
-      label: t("products.shirts"),
-      value: "قميص",
-    },
-    {
-      label: t("products.trousers"),
-      value: "بنطلون",
-    },
-  ];
+  // =========================================================
+  // LIMIT
+  // =========================================================
 
   const getLimit = () => {
     return window.innerWidth <= 768 ? 50 : 100;
   };
+
+  // =========================================================
+  // LOAD PRODUCTS
+  // =========================================================
 
   const loadProducts = async () => {
     try {
@@ -73,11 +75,14 @@ export default function Products() {
         search,
       };
 
+      // NEW IN = newest products
       if (category !== "NEW IN") {
         params.category = category;
       } else {
         params.sort = "newest";
       }
+
+      console.log("Products params:", params);
 
       const res = await API.get("/products", {
         params,
@@ -86,49 +91,55 @@ export default function Products() {
       setProducts(res.data.products || []);
       setPages(res.data.pages || 1);
     } catch (err) {
-      console.log(err);
+      console.log("Products error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // =========================================================
+  // FETCH PRODUCTS
+  // =========================================================
+
   useEffect(() => {
     loadProducts();
   }, [category, page, search]);
 
+  // =========================================================
+  // DISPLAYED PRODUCTS
+  // =========================================================
+
   const displayedProducts = products;
+
+  // =========================================================
+  // PAGE TITLE
+  // =========================================================
+
+  const getCategoryTitle = () => {
+    if (search) {
+      return `"${search}"`;
+    }
+
+    return category;
+  };
 
   return (
     <Box className="products-page">
-      <Box className="category-wrapper">
-        <Box className="category-bar">
-          {categories.map((item) => (
-            <button
-              key={item.value}
-              className={
-                category === item.value ? "category-btn active" : "category-btn"
-              }
-              onClick={() => {
-                setCategory(item.value);
-                setPage(1);
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
-        </Box>
-      </Box>
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
 
       <Box className="section-header">
-        <Typography className="section-title">
-          {categories.find((item) => item.value === category)?.label ||
-            category}
-        </Typography>
+        <Typography className="section-title">{getCategoryTitle()}</Typography>
 
         <Typography className="section-count">
           {displayedProducts.length} {t("products.products")}
         </Typography>
       </Box>
+
+      {/* =====================================================
+          PRODUCTS
+      ====================================================== */}
 
       {loading ? (
         <Box className="loading-box">
@@ -160,6 +171,10 @@ export default function Products() {
           ))}
         </Grid>
       )}
+
+      {/* =====================================================
+          PAGINATION
+      ====================================================== */}
 
       {!loading && pages > 1 && (
         <Box className="arrow-pagination">

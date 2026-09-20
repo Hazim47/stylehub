@@ -1,299 +1,582 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
-import API from "../api/axios";
 
 function Hero() {
   const { t } = useTranslation();
 
-  const [homepage, setHomepage] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchHomepage = async () => {
-      try {
-        const res = await API.get("/homepage");
-
-        setHomepage(res.data);
-      } catch (error) {
-        console.error("FAILED TO FETCH HOMEPAGE:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHomepage();
-  }, []);
-
-  const getImageUrl = (image) => {
-    if (!image) return null;
-
-    if (image.startsWith("http://") || image.startsWith("https://")) {
-      return image;
-    }
-
-    if (image.startsWith("/")) {
-      return `${API.defaults.baseURL}${image}`;
-    }
-
-    return `${API.defaults.baseURL}/uploads/homepage/${image}`;
-  };
-
-  const heroImage1 = getImageUrl(homepage?.heroImage1);
-  const heroImage2 = getImageUrl(homepage?.heroImage2);
-
   return (
     <Box
       sx={{
-        position: "relative",
         width: "100%",
         overflow: "hidden",
-        background: "#060806",
+        background: "#050505",
       }}
     >
-      {/* HERO IMAGES */}
+      {/* =====================================================
+          HERO
+      ====================================================== */}
+
       <Box
         sx={{
-          display: "flex",
+          position: "relative",
           width: "100%",
           height: {
-            xs: "420px",
-            sm: "480px",
-            md: "560px",
-            lg: "620px",
+            xs: "620px",
+            sm: "650px",
+            md: "700px",
+            lg: "720px",
           },
+          overflow: "hidden",
+          background: "#050505",
         }}
       >
-        {/* LEFT IMAGE */}
+        {/* =====================================================
+            HERO VIDEO
+        ====================================================== */}
+
+        <Box
+          component="video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          src="/videos/hero.mp4"
+          sx={{
+            position: "absolute",
+            inset: 0,
+
+            width: "100%",
+            height: "100%",
+
+            objectFit: "cover",
+
+            // غيرها حسب مكان الرجل داخل الفيديو
+            objectPosition: "center center",
+
+            display: "block",
+
+            zIndex: 1,
+          }}
+        />
+
+        {/* =====================================================
+            MAIN DARK GRADIENT
+        ====================================================== */}
+
         <Box
           sx={{
-            width: "50%",
-            height: "100%",
-            overflow: "hidden",
-            position: "relative",
+            position: "absolute",
+            inset: 0,
+
+            background: `
+              linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.10) 0%,
+                rgba(0,0,0,0.02) 35%,
+                rgba(0,0,0,0.18) 58%,
+                rgba(0,0,0,0.82) 100%
+              )
+            `,
+
+            pointerEvents: "none",
+            zIndex: 2,
           }}
-        >
-          {heroImage1 && (
-            <Box
-              component="img"
-              src={heroImage1}
-              alt="StyleHub"
-              onError={(e) => {
-                console.error("HERO IMAGE 1 FAILED:", heroImage1);
-                e.currentTarget.style.display = "none";
-              }}
-              sx={{
-                width: "100%",
-                height: "100%",
-                display: "block",
-                objectFit: "cover",
-                objectPosition: "center center",
-                transition: "transform 1.2s",
+        />
 
-                "&:hover": {
-                  transform: "scale(1.03)",
-                },
-              }}
-            />
-          )}
-        </Box>
+        {/* =====================================================
+            LEFT GRADIENT
+        ====================================================== */}
 
-        {/* RIGHT IMAGE */}
         <Box
           sx={{
-            width: "50%",
-            height: "100%",
-            overflow: "hidden",
-            position: "relative",
+            position: "absolute",
+            inset: 0,
+
+            background: `
+              linear-gradient(
+                90deg,
+                rgba(0,0,0,.45) 0%,
+                rgba(0,0,0,.12) 30%,
+                transparent 65%
+              )
+            `,
+
+            pointerEvents: "none",
+            zIndex: 2,
           }}
-        >
-          {heroImage2 && (
-            <Box
-              component="img"
-              src={heroImage2}
-              alt="StyleHub"
-              onError={(e) => {
-                console.error("HERO IMAGE 2 FAILED:", heroImage2);
-                e.currentTarget.style.display = "none";
-              }}
-              sx={{
-                width: "100%",
-                height: "100%",
-                display: "block",
-                objectFit: "cover",
-                objectPosition: "center center",
-                transition: "transform 1.2s",
+        />
 
-                "&:hover": {
-                  transform: "scale(1.03)",
-                },
-              }}
-            />
-          )}
-        </Box>
-      </Box>
+        {/* =====================================================
+            TOP FADE
+        ====================================================== */}
 
-      {/* DARK OVERLAY */}
-      <Box
-        sx={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.45))",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* CENTER CONTENT */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          color: "#fff",
-          width: {
-            xs: "90%",
-            sm: "85%",
-            md: "70%",
-            lg: "65%",
-          },
-          zIndex: 2,
-        }}
-      >
-        <Typography
+        <Box
           sx={{
-            fontSize: {
+            position: "absolute",
+
+            top: 0,
+            left: 0,
+            right: 0,
+
+            height: {
+              xs: "80px",
+              md: "110px",
+            },
+
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,.35), transparent)",
+
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        />
+
+        {/* =====================================================
+            FRAME
+        ====================================================== */}
+
+        <Box
+          sx={{
+            position: "absolute",
+
+            inset: {
+              xs: "14px",
+              sm: "20px",
+              md: "25px",
+            },
+
+            border: "1px solid rgba(255,255,255,.17)",
+
+            pointerEvents: "none",
+            zIndex: 4,
+
+            "&::before": {
+              content: '""',
+
+              position: "absolute",
+
+              top: "-1px",
+              left: "-1px",
+
+              width: {
+                xs: "50px",
+                md: "65px",
+              },
+
+              height: {
+                xs: "50px",
+                md: "65px",
+              },
+
+              borderTop: "2px solid rgba(255,255,255,.75)",
+              borderLeft: "2px solid rgba(255,255,255,.75)",
+            },
+
+            "&::after": {
+              content: '""',
+
+              position: "absolute",
+
+              bottom: "-1px",
+              right: "-1px",
+
+              width: {
+                xs: "50px",
+                md: "65px",
+              },
+
+              height: {
+                xs: "50px",
+                md: "65px",
+              },
+
+              borderBottom: "2px solid rgba(255,255,255,.75)",
+              borderRight: "2px solid rgba(255,255,255,.75)",
+            },
+          }}
+        />
+
+        {/* =====================================================
+            TOP LEFT
+        ====================================================== */}
+
+        <Box
+          sx={{
+            position: "absolute",
+
+            top: {
               xs: "38px",
-              sm: "48px",
-              md: "60px",
-              lg: "68px",
+              md: "48px",
             },
-            fontWeight: 900,
-            letterSpacing: {
-              xs: "3px",
-              md: "6px",
-            },
-            mb: 2,
-            textShadow: "0 4px 20px rgba(0,0,0,.7)",
-          }}
-        >
-          STYLEHUB
-        </Typography>
 
-        <Typography
-          sx={{
-            fontSize: {
-              xs: "15px",
-              sm: "17px",
-              md: "19px",
-              lg: "21px",
+            left: {
+              xs: "28px",
+              md: "50px",
             },
+
+            display: "flex",
+            alignItems: "center",
+
+            gap: 1.5,
+
             color: "#fff",
-            lineHeight: 1.8,
-            maxWidth: "620px",
-            mx: "auto",
-            textShadow: "0 3px 12px rgba(0,0,0,.8)",
+
+            zIndex: 5,
           }}
         >
-          {t("hero.description")}
-        </Typography>
+          <Box
+            sx={{
+              width: "28px",
+              height: "1px",
+              background: "#fff",
+              opacity: 0.8,
+            }}
+          />
 
-        {/* BUTTONS */}
+          <Typography
+            sx={{
+              fontSize: {
+                xs: "8px",
+                md: "10px",
+              },
+
+              letterSpacing: "3px",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              opacity: 0.85,
+            }}
+          >
+            NEW COLLECTION
+          </Typography>
+        </Box>
+
+        {/* =====================================================
+            MAIN CONTENT
+        ====================================================== */}
+
         <Box
           sx={{
-            mt: 4,
-            display: "flex",
-            justifyContent: "center",
-            gap: 2,
-            flexWrap: "wrap",
+            position: "absolute",
+
+            left: {
+              xs: "28px",
+              sm: "45px",
+              md: "60px",
+              lg: "75px",
+            },
+
+            bottom: {
+              xs: "45px",
+              sm: "45px",
+              md: "50px",
+              lg: "55px",
+            },
+
+            width: {
+              xs: "calc(100% - 56px)",
+              sm: "470px",
+              md: "520px",
+              lg: "560px",
+            },
+
+            color: "#fff",
+
+            zIndex: 5,
           }}
         >
-          <Button
-            component={Link}
-            to="/products"
-            sx={{
-              background: "#556B2F",
-              color: "#fff",
-              px: {
-                xs: 4,
-                md: 5,
-              },
-              py: {
-                xs: 1.4,
-                md: 1.7,
-              },
-              fontSize: {
-                xs: "15px",
-                md: "16px",
-              },
-              fontWeight: 700,
-              borderRadius: "40px",
-              textTransform: "none",
-              boxShadow: "0 12px 30px rgba(0,0,0,.45)",
-              transition: ".3s",
+          {/* Small statement */}
 
-              "&:hover": {
-                background: "#718B3E",
-                transform: "translateY(-3px)",
+          <Typography
+            sx={{
+              fontSize: {
+                xs: "10px",
+                sm: "11px",
+                md: "12px",
+              },
+
+              letterSpacing: {
+                xs: "3px",
+                md: "5px",
+              },
+
+              fontWeight: 500,
+
+              color: "rgba(255,255,255,.72)",
+
+              textTransform: "uppercase",
+
+              mb: {
+                xs: 1.2,
+                md: 1.5,
               },
             }}
           >
-            {t("hero.shopNow")}
-          </Button>
+            YOUR STYLE. YOUR STATEMENT.
+          </Typography>
 
-          <Button
-            component={Link}
-            to="/products"
-            variant="outlined"
+          {/* Main title */}
+
+          <Typography
+            component="h1"
             sx={{
-              borderColor: "#fff",
-              color: "#fff",
-              px: {
-                xs: 4,
-                md: 5,
-              },
-              py: {
-                xs: 1.4,
-                md: 1.7,
-              },
-              borderRadius: "40px",
               fontSize: {
-                xs: "15px",
-                md: "16px",
+                xs: "34px",
+                sm: "43px",
+                md: "52px",
+                lg: "58px",
               },
-              fontWeight: 700,
-              textTransform: "none",
-              transition: ".3s",
-              background: "rgba(0,0,0,.15)",
 
-              "&:hover": {
+              lineHeight: 1.02,
+
+              fontWeight: 700,
+
+              letterSpacing: {
+                xs: "1px",
+                md: "2px",
+              },
+
+              color: "#070000",
+
+              textTransform: "uppercase",
+
+              textShadow: "0 5px 20px rgba(0,0,0,.75)",
+
+              maxWidth: {
+                xs: "330px",
+                md: "500px",
+              },
+
+              mb: {
+                xs: 1.5,
+                md: 2,
+              },
+            }}
+          >
+            WEAR WHAT
+            <br />
+            DEFINES YOU
+          </Typography>
+
+          {/* Thin line */}
+
+          <Box
+            sx={{
+              width: {
+                xs: "55px",
+                md: "75px",
+              },
+
+              height: "1px",
+
+              background: "#fff",
+
+              mb: {
+                xs: 1.5,
+                md: 2,
+              },
+            }}
+          />
+
+          {/* Description */}
+
+          <Typography
+            sx={{
+              fontSize: {
+                xs: "12px",
+                sm: "13px",
+                md: "14px",
+              },
+
+              lineHeight: 1.65,
+
+              maxWidth: {
+                xs: "320px",
+                sm: "430px",
+                md: "500px",
+              },
+
+              color: "rgba(255,255,255,.78)",
+
+              textShadow: "0 2px 12px rgba(0,0,0,.8)",
+
+              mb: {
+                xs: 2,
+                md: 2.5,
+              },
+            }}
+          >
+            {t("hero.description")}
+          </Typography>
+
+          {/* =====================================================
+              BUTTONS
+          ====================================================== */}
+
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1.5,
+              flexWrap: "wrap",
+            }}
+          >
+            <Button
+              component={Link}
+              to="/products"
+              sx={{
+                minWidth: {
+                  xs: "125px",
+                  sm: "140px",
+                },
+
+                height: {
+                  xs: "42px",
+                  md: "45px",
+                },
+
+                px: 2.5,
+
                 background: "#fff",
                 color: "#000",
-                borderColor: "#fff",
-                transform: "translateY(-3px)",
-              },
+
+                borderRadius: 0,
+
+                fontSize: {
+                  xs: "10px",
+                  md: "11px",
+                },
+
+                fontWeight: 800,
+
+                letterSpacing: "1.5px",
+
+                textTransform: "uppercase",
+
+                transition: ".3s",
+
+                "&:hover": {
+                  background: "#000",
+                  color: "#fff",
+                  transform: "translateY(-2px)",
+                },
+              }}
+            >
+              {t("hero.shopNow")}
+            </Button>
+
+            <Button
+              component={Link}
+              to="/products"
+              sx={{
+                minWidth: {
+                  xs: "125px",
+                  sm: "140px",
+                },
+
+                height: {
+                  xs: "42px",
+                  md: "45px",
+                },
+
+                px: 2.5,
+
+                background: "rgba(0,0,0,.15)",
+
+                color: "#fff",
+
+                border: "1px solid rgba(255,255,255,.75)",
+
+                borderRadius: 0,
+
+                fontSize: {
+                  xs: "10px",
+                  md: "11px",
+                },
+
+                fontWeight: 700,
+
+                letterSpacing: "1.5px",
+
+                textTransform: "uppercase",
+
+                backdropFilter: "blur(4px)",
+
+                transition: ".3s",
+
+                "&:hover": {
+                  background: "#fff",
+                  color: "#000",
+                  borderColor: "#fff",
+                  transform: "translateY(-2px)",
+                },
+              }}
+            >
+              {t("hero.discover")}
+            </Button>
+          </Box>
+        </Box>
+
+        {/* =====================================================
+            RIGHT SIDE
+        ====================================================== */}
+
+        <Box
+          sx={{
+            position: "absolute",
+
+            right: {
+              md: "28px",
+              lg: "45px",
+            },
+
+            bottom: {
+              md: "45px",
+              lg: "48px",
+            },
+
+            display: {
+              xs: "none",
+              md: "flex",
+            },
+
+            alignItems: "center",
+
+            gap: 1.5,
+
+            color: "rgba(255,255,255,.65)",
+
+            zIndex: 5,
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "8px",
+              letterSpacing: "2px",
+              textTransform: "uppercase",
             }}
           >
-            {t("hero.discover")}
-          </Button>
+            AMMAN / JORDAN
+          </Typography>
+
+          <Box
+            sx={{
+              width: "25px",
+              height: "1px",
+              background: "rgba(255,255,255,.5)",
+            }}
+          />
+
+          <Typography
+            sx={{
+              fontSize: "8px",
+              letterSpacing: "2px",
+            }}
+          >
+            2026
+          </Typography>
         </Box>
       </Box>
-
-      {/* BOTTOM GRADIENT */}
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          height: "140px",
-          background: "linear-gradient(to top, #060806, transparent)",
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      />
     </Box>
   );
 }

@@ -125,6 +125,8 @@ function NewIn() {
         >
           {seasons.map((item) => (
             <Box
+              key={item.value}
+              onClick={() => navigate("/products?category=NEW%20IN")}
               sx={{
                 position: "relative",
                 overflow: "hidden",
@@ -214,6 +216,7 @@ function NewIn() {
                 <Button
                   className="btn"
                   variant="contained"
+                  onClick={() => navigate("/products?category=NEW%20IN")}
                   sx={{
                     opacity: 0,
                     transform: "translate(-50%, 30px)",
