@@ -17,10 +17,16 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import CloseIcon from "@mui/icons-material/Close";
 import LanguageIcon from "@mui/icons-material/Language";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import ProfileMenu from "../components/ProfileMenu";
@@ -35,6 +41,7 @@ function Navbar() {
   const isMobile = useMediaQuery("(max-width: 900px)");
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const { t, i18n } = useTranslation();
@@ -49,6 +56,15 @@ function Navbar() {
   const [mobilePanel, setMobilePanel] = useState(null);
 
   const [desktopSearchOpen, setDesktopSearchOpen] = useState(false);
+
+  // =========================================================
+  // MOBILE SHEET DRAG
+  // =========================================================
+
+  const [sheetY, setSheetY] = useState(0);
+  const [isDraggingSheet, setIsDraggingSheet] = useState(false);
+
+  const sheetStartY = useRef(0);
 
   // =========================================================
   // CATEGORIES
@@ -88,6 +104,7 @@ function Navbar() {
   const handleCategory = (category) => {
     setMobilePanel(null);
     setDesktopSearchOpen(false);
+    setSheetY(0);
 
     setSearch("");
     setSearchResults([]);
@@ -161,6 +178,7 @@ function Navbar() {
 
     setMobilePanel(null);
     setDesktopSearchOpen(false);
+    setSheetY(0);
   };
 
   // =========================================================
@@ -170,13 +188,11 @@ function Navbar() {
   const handleSearchProduct = (product) => {
     if (!product?.id) return;
 
-    // AppRoutes:
-    // /products/:id
-
     navigate(`/products/${product.id}`);
 
     setMobilePanel(null);
     setDesktopSearchOpen(false);
+    setSheetY(0);
     setSearchResults([]);
   };
 
@@ -232,6 +248,53 @@ function Navbar() {
   const closePanels = () => {
     setMobilePanel(null);
     setDesktopSearchOpen(false);
+    setSheetY(0);
+    setIsDraggingSheet(false);
+  };
+
+  // =========================================================
+  // MOBILE SHEET DRAG
+  // =========================================================
+
+  const handleSheetPointerDown = (event) => {
+    sheetStartY.current = event.clientY;
+    setIsDraggingSheet(true);
+
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const handleSheetPointerMove = (event) => {
+    if (!isDraggingSheet) return;
+
+    const distance = event.clientY - sheetStartY.current;
+
+    // السماح بالسحب للأسفل فقط
+    if (distance > 0) {
+      setSheetY(distance);
+    }
+  };
+
+  const handleSheetPointerUp = (event) => {
+    if (!isDraggingSheet) return;
+
+    const distance = event.clientY - sheetStartY.current;
+
+    setIsDraggingSheet(false);
+
+    // إذا سحب المستخدم أكثر من 100px -> إغلاق
+    if (distance > 100) {
+      setSheetY(0);
+      setMobilePanel(null);
+      return;
+    }
+
+    // إذا كانت المسافة قليلة -> رجوع لمكانه
+    setSheetY(0);
+  };
+
+  const handleSheetPointerCancel = () => {
+    setIsDraggingSheet(false);
+    setSheetY(0);
   };
 
   // =========================================================
@@ -298,10 +361,27 @@ function Navbar() {
 
             <Box className="zya-mobile-left">
               <IconButton
-                onClick={() => setMobilePanel("categories")}
+                onClick={() => {
+                  setMobilePanel("categories");
+                  setSheetY(0);
+                }}
                 className="zya-icon-button"
               >
-                <MenuIcon />
+                <Badge
+                  badgeContent={notificationCount}
+                  color="error"
+                  invisible={notificationCount === 0}
+                  sx={{
+                    "& .MuiBadge-badge": {
+                      fontSize: "8px",
+                      minWidth: 13,
+                      height: 13,
+                      padding: 0,
+                    },
+                  }}
+                >
+                  <MenuIcon />
+                </Badge>
               </IconButton>
             </Box>
 
@@ -317,7 +397,10 @@ function Navbar() {
               {/* SEARCH */}
 
               <IconButton
-                onClick={() => setMobilePanel("search")}
+                onClick={() => {
+                  setMobilePanel("search");
+                  setSheetY(0);
+                }}
                 className="zya-icon-button"
               >
                 <SearchIcon />
@@ -346,6 +429,16 @@ function Navbar() {
                 </Badge>
               </IconButton>
 
+              {/* FAVORITES */}
+
+              <IconButton
+                component={Link}
+                to="/favorites"
+                className="zya-icon-button"
+              >
+                <FavoriteBorderOutlinedIcon />
+              </IconButton>
+
               {/* PROFILE */}
 
               <Box className="zya-mobile-profile-icon">
@@ -363,8 +456,22 @@ function Navbar() {
           <>
             <Box className="zya-panel-backdrop" onClick={closePanels} />
 
-            <Box className="zya-mobile-sheet">
-              <Box className="zya-sheet-handle" />
+            <Box
+              className="zya-mobile-sheet"
+              style={{
+                transform: `translateY(${sheetY}px)`,
+                transition: isDraggingSheet ? "none" : "transform 0.3s ease",
+              }}
+            >
+              {/* DRAG HANDLE */}
+
+              <Box
+                className="zya-sheet-handle"
+                onPointerDown={handleSheetPointerDown}
+                onPointerMove={handleSheetPointerMove}
+                onPointerUp={handleSheetPointerUp}
+                onPointerCancel={handleSheetPointerCancel}
+              />
 
               <Box className="zya-sheet-header">
                 <Typography className="zya-sheet-title">
@@ -396,25 +503,16 @@ function Navbar() {
                     ))}
                   </Box>
 
-                  {/* ACCOUNT */}
-
                   <Box className="zya-sheet-account">
-                    {/* FAVORITES */}
-
-                    <Box
-                      className="zya-account-item"
-                      onClick={() => navigate("/favorites")}
-                    >
-                      <FavoriteBorderOutlinedIcon />
-
-                      <span>Favorites</span>
-                    </Box>
-
                     {/* NOTIFICATIONS */}
 
                     <Box
                       className="zya-account-item"
-                      onClick={() => navigate("/notifications")}
+                      onClick={() => {
+                        setMobilePanel(null);
+                        setSheetY(0);
+                        navigate("/notifications");
+                      }}
                     >
                       <Badge badgeContent={notificationCount} color="error">
                         <NotificationsNoneOutlinedIcon />
@@ -585,6 +683,19 @@ function Navbar() {
             >
               <SearchIcon />
             </IconButton>
+
+            {/* HOME */}
+
+            {location.pathname !== "/" && (
+              <IconButton
+                component={Link}
+                to="/"
+                className="zya-desktop-icon"
+                aria-label="Home"
+              >
+                <HomeOutlinedIcon />
+              </IconButton>
+            )}
 
             {/* CART */}
 

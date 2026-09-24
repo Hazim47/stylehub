@@ -335,36 +335,214 @@ function Checkout() {
             </Grid>
           </Grid>
 
-          {/* COUPON */}
+          {/* ORDER SUMMARY */}
 
-          {coupon && (
+          <Box
+            sx={{
+              mt: 4,
+              borderRadius: 3,
+              border: "1px solid #e5e5e5",
+              background: "#fff",
+              overflow: "hidden",
+            }}
+          >
+            {/* HEADER */}
             <Box
               sx={{
-                mt: 3,
-
-                p: 2,
-
-                borderRadius: 2,
-
-                background: "#111",
-
-                color: "#fff",
+                px: {
+                  xs: 2,
+                  md: 3,
+                },
+                py: 2,
+                borderBottom: "1px solid #eeeeee",
               }}
             >
-              <Typography fontWeight={700} fontSize={16}>
-                {t("checkout.coupon")} : {coupon.code}
-              </Typography>
-
-              <Typography fontSize={14}>
-                {t("checkout.discount")} : {discount}%
-              </Typography>
-
-              <Typography fontWeight={800} fontSize={16}>
-                {t("checkout.total")} : {finalTotal} JD
+              <Typography
+                sx={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#111",
+                }}
+              >
+                {t("checkout.orderSummary")}
               </Typography>
             </Box>
-          )}
 
+            {/* CONTENT */}
+            <Box
+              sx={{
+                px: {
+                  xs: 2,
+                  md: 3,
+                },
+                py: 2.5,
+              }}
+            >
+              {/* SUBTOTAL */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: "#777",
+                    fontSize: 14,
+                  }}
+                >
+                  {t("checkout.subtotal")}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: "#222",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    direction: "ltr",
+                  }}
+                >
+                  {cart
+                    .reduce(
+                      (total, item) =>
+                        total +
+                        Number(item.price || 0) * Number(item.quantity || 1),
+                      0,
+                    )
+                    .toFixed(2)}{" "}
+                  {t("checkout.currency")}
+                </Typography>
+              </Box>
+
+              {/* COUPON */}
+              {coupon && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "#777",
+                      fontSize: 14,
+                    }}
+                  >
+                    {t("checkout.coupon")}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        px: 1.2,
+                        py: 0.5,
+                        borderRadius: 1,
+                        background: "#f1f8f3",
+                        color: "#16803c",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        direction: "ltr",
+                      }}
+                    >
+                      {coupon.code}
+                    </Box>
+
+                    <Typography
+                      sx={{
+                        color: "#16803c",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        direction: "ltr",
+                      }}
+                    >
+                      -{discount}%
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+
+              <Divider
+                sx={{
+                  my: 2,
+                  borderColor: "#eeeeee",
+                }}
+              />
+
+              {/* TOTAL */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box>
+                  <Typography
+                    sx={{
+                      fontSize: 15,
+                      fontWeight: 800,
+                      color: "#111",
+                    }}
+                  >
+                    {t("checkout.total")}
+                  </Typography>
+
+                  {coupon && (
+                    <Typography
+                      sx={{
+                        mt: 0.3,
+                        fontSize: 12,
+                        color: "#16803c",
+                      }}
+                    >
+                      {t("checkout.discount")} {discount}%
+                    </Typography>
+                  )}
+                </Box>
+
+                <Typography
+                  sx={{
+                    fontSize: 24,
+                    fontWeight: 900,
+                    color: "#111",
+                    direction: "ltr",
+                  }}
+                >
+                  {coupon
+                    ? Number(finalTotal || 0).toFixed(2)
+                    : cart
+                        .reduce(
+                          (total, item) =>
+                            total +
+                            Number(item.price || 0) *
+                              Number(item.quantity || 1),
+                          0,
+                        )
+                        .toFixed(2)}{" "}
+                  <Box
+                    component="span"
+                    sx={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#555",
+                    }}
+                  >
+                    {t("checkout.currency")}
+                  </Box>
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
           {/* BUTTON */}
 
           <Button
