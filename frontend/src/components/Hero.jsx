@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 function Hero() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const isRTL = i18n.dir() === "rtl";
 
   return (
     <Box
@@ -52,7 +54,6 @@ function Hero() {
 
             objectFit: "cover",
 
-            // غيرها حسب مكان الرجل داخل الفيديو
             objectPosition: "center center",
 
             display: "block",
@@ -248,7 +249,7 @@ function Hero() {
               opacity: 0.85,
             }}
           >
-            NEW COLLECTION
+            {t("hero.newCollection")}
           </Typography>
         </Box>
 
@@ -260,12 +261,23 @@ function Hero() {
           sx={{
             position: "absolute",
 
-            left: {
-              xs: "28px",
-              sm: "45px",
-              md: "60px",
-              lg: "75px",
-            },
+            left: isRTL
+              ? "auto"
+              : {
+                  xs: "28px",
+                  sm: "45px",
+                  md: "60px",
+                  lg: "75px",
+                },
+
+            right: isRTL
+              ? {
+                  xs: "28px",
+                  sm: "45px",
+                  md: "60px",
+                  lg: "75px",
+                }
+              : "auto",
 
             bottom: {
               xs: "45px",
@@ -282,11 +294,13 @@ function Hero() {
             },
 
             color: "#fff",
-
+            textAlign: isRTL ? "right" : "left",
             zIndex: 5,
           }}
         >
-          {/* Small statement */}
+          {/* =====================================================
+              SMALL STATEMENT
+          ====================================================== */}
 
           <Typography
             sx={{
@@ -313,10 +327,12 @@ function Hero() {
               },
             }}
           >
-            YOUR STYLE. YOUR STATEMENT.
+            {t("hero.statement")}
           </Typography>
 
-          {/* Main title */}
+          {/* =====================================================
+              MAIN TITLE
+          ====================================================== */}
 
           <Typography
             component="h1"
@@ -354,12 +370,14 @@ function Hero() {
               },
             }}
           >
-            WEAR WHAT
+            {t("hero.titleLine1")}
             <br />
-            DEFINES YOU
+            {t("hero.titleLine2")}
           </Typography>
 
-          {/* Thin line */}
+          {/* =====================================================
+              THIN LINE
+          ====================================================== */}
 
           <Box
             sx={{
@@ -379,7 +397,9 @@ function Hero() {
             }}
           />
 
-          {/* Description */}
+          {/* =====================================================
+              DESCRIPTION
+          ====================================================== */}
 
           <Typography
             sx={{
@@ -421,6 +441,8 @@ function Hero() {
               flexWrap: "wrap",
             }}
           >
+            {/* SHOP NOW */}
+
             <Button
               component={Link}
               to="/products"
@@ -464,6 +486,8 @@ function Hero() {
             >
               {t("hero.shopNow")}
             </Button>
+
+            {/* DISCOVER */}
 
             <Button
               component={Link}
@@ -525,10 +549,19 @@ function Hero() {
           sx={{
             position: "absolute",
 
-            right: {
-              md: "28px",
-              lg: "45px",
-            },
+            right: isRTL
+              ? "auto"
+              : {
+                  md: "28px",
+                  lg: "45px",
+                },
+
+            left: isRTL
+              ? {
+                  md: "28px",
+                  lg: "45px",
+                }
+              : "auto",
 
             bottom: {
               md: "45px",
@@ -556,7 +589,7 @@ function Hero() {
               textTransform: "uppercase",
             }}
           >
-            AMMAN / JORDAN
+            {t("hero.location")}
           </Typography>
 
           <Box

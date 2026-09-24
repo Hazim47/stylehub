@@ -16,16 +16,16 @@ export default function Products() {
   const { t } = useTranslation();
 
   const [products, setProducts] = useState([]);
-  const [category, setCategory] = useState("NEW IN");
 
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
 
   const [loading, setLoading] = useState(false);
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const search = searchParams.get("search") || "";
+  const category = searchParams.get("category") || "NEW IN";
 
   // =========================================================
   // CATEGORIES
@@ -59,24 +59,7 @@ export default function Products() {
   ];
 
   // =========================================================
-  // READ SEARCH + CATEGORY FROM URL
-  // =========================================================
-
-  useEffect(() => {
-    const urlSearch = searchParams.get("search") || "";
-    const urlCategory = searchParams.get("category");
-
-    setSearch(urlSearch);
-
-    if (urlCategory) {
-      setCategory(urlCategory);
-    } else {
-      setCategory("NEW IN");
-    }
-  }, [searchParams]);
-
-  // =========================================================
-  // RESET PAGE WHEN SEARCH / CATEGORY CHANGES
+  // RESET PAGE WHEN URL SEARCH / CATEGORY CHANGES
   // =========================================================
 
   useEffect(() => {
@@ -95,55 +78,88 @@ export default function Products() {
   // LOAD PRODUCTS
   // =========================================================
 
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    let cancelled = false;
 
-      const params = {
-        page,
-        limit: getLimit(),
-        search,
-      };
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
 
-      if (category !== "NEW IN") {
-        params.category = category;
-      } else {
-        params.sort = "newest";
+        const params = {
+          page,
+          limit: getLimit(),
+          search,
+        };
+
+        if (category !== "NEW IN") {
+          params.category = category;
+        } else {
+          params.sort = "newest";
+        }
+
+        console.log("Products params:", params);
+
+        const res = await API.get("/products", {
+          params,
+        });
+
+        // منع طلب قديم من تغيير النتائج
+        if (cancelled) return;
+
+        setProducts(res.data.products || []);
+        setPages(res.data.pages || 1);
+      } catch (err) {
+        if (cancelled) return;
+
+        console.log("Products error:", err);
+        setProducts([]);
+        setPages(1);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
+    };
 
-      console.log("Products params:", params);
+    loadProducts();
 
-      const res = await API.get("/products", {
-        params,
-      });
+    return () => {
+      cancelled = true;
+    };
+  }, [category, page, search]);
 
-      setProducts(res.data.products || []);
-      setPages(res.data.pages || 1);
-    } catch (err) {
-      console.log("Products error:", err);
-    } finally {
-      setLoading(false);
+  // =========================================================
+  // CATEGORY CLICK - MOBILE
+  // =========================================================
+
+  const handleCategoryClick = (value) => {
+    setPage(1);
+
+    const params = new URLSearchParams();
+
+    if (value !== "NEW IN") {
+      params.set("category", value);
     }
+
+    if (search) {
+      params.set("search", search);
+    }
+
+    setSearchParams(params);
   };
 
   // =========================================================
-  // FETCH
+  // DISPLAYED PRODUCTS
   // =========================================================
-
-  useEffect(() => {
-    loadProducts();
-  }, [category, page, search]);
 
   const displayedProducts = products;
 
   // =========================================================
-  // CATEGORY CLICK
+  // CURRENT CATEGORY TITLE
   // =========================================================
 
-  const handleCategoryClick = (value) => {
-    setCategory(value);
-    setPage(1);
-  };
+  const currentCategory =
+    categories.find((item) => item.value === category)?.label || category;
 
   return (
     <Box className="products-page">
@@ -173,10 +189,7 @@ export default function Products() {
 
       <Box className="section-header">
         <Typography className="section-title">
-          {search
-            ? `"${search}"`
-            : categories.find((item) => item.value === category)?.label ||
-              category}
+          {search ? `"${search}"` : currentCategory}
         </Typography>
 
         <Typography className="section-count">
@@ -229,7 +242,7 @@ export default function Products() {
             className="page-arrow"
             disabled={page === 1}
             onClick={() => {
-              setPage(page - 1);
+              setPage((prev) => prev - 1);
 
               window.scrollTo({
                 top: 0,
@@ -244,7 +257,7 @@ export default function Products() {
             className="page-arrow"
             disabled={page === pages}
             onClick={() => {
-              setPage(page + 1);
+              setPage((prev) => prev + 1);
 
               window.scrollTo({
                 top: 0,

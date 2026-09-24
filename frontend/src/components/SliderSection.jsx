@@ -1,20 +1,24 @@
-import { Box, Typography, Button, IconButton } from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Box, Typography, IconButton } from "@mui/material";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useFavorites from "../hooks/useFavorites";
 import { FavoriteBorder, Favorite } from "@mui/icons-material";
+
 export default function SliderSection({ products }) {
   const sliderRef = useRef(null);
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
+  const { toggleFavorite, isFavorite } = useFavorites();
+
   // -----------------------------
   // Drag Slider
   // -----------------------------
-  const { t } = useTranslation();
-  const { toggleFavorite, isFavorite } = useFavorites();
+
   const mouseDown = (e) => {
     const slider = sliderRef.current;
+
     slider.isDown = true;
     slider.startX = e.pageX - slider.offsetLeft;
     slider.scrollLeftStart = slider.scrollLeft;
@@ -22,11 +26,13 @@ export default function SliderSection({ products }) {
 
   const mouseLeave = () => {
     if (!sliderRef.current) return;
+
     sliderRef.current.isDown = false;
   };
 
   const mouseUp = () => {
     if (!sliderRef.current) return;
+
     sliderRef.current.isDown = false;
   };
 
@@ -105,6 +111,7 @@ export default function SliderSection({ products }) {
               }}
             >
               {/* IMAGE */}
+
               <Box
                 onClick={() => navigate(`/products/${product.id}`)}
                 sx={{
@@ -117,6 +124,8 @@ export default function SliderSection({ products }) {
                   overflow: "hidden",
                 }}
               >
+                {/* NEW BADGE */}
+
                 <Box
                   sx={{
                     position: "absolute",
@@ -138,8 +147,11 @@ export default function SliderSection({ products }) {
                     textTransform: "uppercase",
                   }}
                 >
-                  NEW
+                  {t("latest.new")}
                 </Box>
+
+                {/* PRODUCT IMAGE */}
+
                 <Box
                   component="img"
                   className="image"
@@ -204,6 +216,7 @@ export default function SliderSection({ products }) {
                   >
                     {product.name}
                   </Typography>
+
                   <IconButton
                     onClick={(e) => {
                       e.preventDefault();
@@ -261,6 +274,7 @@ export default function SliderSection({ products }) {
                 </Box>
 
                 {/* PRICE */}
+
                 <Box
                   sx={{
                     display: "flex",
@@ -275,12 +289,15 @@ export default function SliderSection({ products }) {
                         xs: 17,
                         md: 20,
                       },
+
                       fontWeight: 900,
                       color: "#000",
                     }}
                   >
-                    {product.price} JD
+                    {product.price} {t("latest.currency")}
                   </Typography>
+
+                  {/* OLD PRICE + SALE */}
 
                   {product.oldPrice && (
                     <Box
@@ -304,25 +321,29 @@ export default function SliderSection({ products }) {
                           fontWeight: 600,
                         }}
                       >
-                        {product.oldPrice} JD
+                        {product.oldPrice} {t("latest.currency")}
                       </Typography>
 
                       <Box
                         sx={{
                           background: "#e53935",
                           color: "#fff",
+
                           px: 1,
                           py: 0.3,
+
                           borderRadius: "20px",
+
                           fontSize: {
                             xs: 10,
                             md: 11,
                           },
+
                           fontWeight: 800,
                           letterSpacing: 0.5,
                         }}
                       >
-                        SALE
+                        {t("latest.sale")}
                       </Box>
                     </Box>
                   )}

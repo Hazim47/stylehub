@@ -24,11 +24,22 @@ const resources = {
         empty: "No Favorites Yet",
         emptyText: "Start adding products you love ❤️",
       },
-      hero: {
+      fashionVideo: {
+        collection: "ZYA COLLECTION",
+        title: "DISCOVER YOUR STYLE",
         description:
-          "Discover our latest fashion collection, carefully crafted to give you a luxurious look and timeless elegance.",
-        shopNow: "Shop Now",
-        discover: "Explore Collection",
+          "Explore our latest collection and discover pieces made to define your style.",
+      },
+      hero: {
+        newCollection: "NEW COLLECTION",
+        statement: "YOUR STYLE YOUR STATEMENT.",
+        titleLine1: "WEAR WHAT",
+        titleLine2: "DEFINES YOU",
+        description:
+          "Discover styles that reflect your personality and make every look your own.",
+        shopNow: "SHOP NOW",
+        discover: "DISCOVER",
+        location: "AMMAN / JORDAN",
       },
       newIn: {
         title: "NEW COLLECTION",
@@ -51,6 +62,9 @@ const resources = {
         title: "OUR COLLECTION",
         subtitle: "Explore our newest fashion collections.",
         shopNow: "SHOP NOW",
+        new: "NEW",
+        sale: "SALE",
+        currency: "JD",
       },
       slider: {
         viewProduct: "View Product",
@@ -244,7 +258,7 @@ const resources = {
         trousers: "بناطيل",
         products: "منتجات",
         noProducts: "لا توجد منتجات",
-        noProductsText: "لم نجد أي منتجات مطابقة للبحث.",
+        noProductsText: "لم نجد أي منتجات مطابقة للبحث",
       },
 
       slider: {
@@ -256,13 +270,20 @@ const resources = {
         title: "مجموعتنا",
         subtitle: "اكتشف أحدث تشكيلات الأزياء لدينا",
         shopNow: "تسوق الآن",
+        new: "جديد",
+        sale: "تخفيض",
+        currency: "دينار",
       },
 
       hero: {
-        description:
-          "اكتشف تشكيلتنا الجديدة من الملابس المصممة بعناية لتمنحك إطلالة فاخرة وأناقة لا مثيل لها.",
+        newCollection: "المجموعة الجديدة",
+        statement: "أسلوبك تعبيرك",
+        titleLine1: "ارتدِ ما",
+        titleLine2: "يعبّر عنك",
+        description: "اكتشف تصاميم تعكس شخصيتك وتجعل كل إطلالة تعبّر عنك",
         shopNow: "تسوق الآن",
-        discover: "اكتشف المجموعة",
+        discover: "اكتشف",
+        location: "عمّان / الأردن",
       },
 
       newIn: {
@@ -277,11 +298,17 @@ const resources = {
 
       footer: {
         description:
-          "متجر أزياء يقدم أحدث صيحات الملابس بتصاميم عصرية وجودة عالية. نختار لك القطع التي تعكس أناقتك وشخصيتك.",
+          "متجر أزياء يقدم أحدث صيحات الملابس بتصاميم عصرية وجودة عالية. نختار لك القطع التي تعكس أناقتك وشخصيتك",
         store: "المتجر",
         contact: "تواصل معنا",
         country: "الأردن",
         rights: "جميع الحقوق محفوظة",
+      },
+      fashionVideo: {
+        collection: "مجموعة ZYA",
+        title: "اكتشف أسلوبك",
+        description:
+          "استكشف أحدث مجموعاتنا واكتشف قطعًا صُممت لتعبّر عن أسلوبك",
       },
     },
   },

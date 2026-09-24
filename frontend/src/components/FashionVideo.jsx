@@ -1,9 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 function FashionVideo() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
@@ -46,7 +44,7 @@ function FashionVideo() {
             textTransform: "uppercase",
           }}
         >
-          ZYA COLLECTION
+          {t("fashionVideo.collection")}
         </Typography>
 
         <Typography
@@ -68,7 +66,7 @@ function FashionVideo() {
             textTransform: "uppercase",
           }}
         >
-          DISCOVER YOUR STYLE
+          {t("fashionVideo.title")}
         </Typography>
 
         <Typography
@@ -83,8 +81,7 @@ function FashionVideo() {
             lineHeight: 1.7,
           }}
         >
-          Explore our latest collection and discover pieces made to define your
-          style.
+          {t("fashionVideo.description")}
         </Typography>
       </Box>
 
