@@ -12,6 +12,7 @@ import {
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,8 @@ import { useTranslation } from "react-i18next";
 
 import API from "../api/axios";
 import useCartStore from "../store/cartStore";
+
+import "./css/Payment.css";
 
 function Payment() {
   const navigate = useNavigate();
@@ -40,6 +43,10 @@ function Payment() {
 
   const [loading, setLoading] = useState(false);
 
+  /* =========================================================
+     LOAD CHECKOUT DATA
+     ========================================================= */
+
   useEffect(() => {
     const savedData = sessionStorage.getItem("zyaCheckoutData");
 
@@ -51,10 +58,14 @@ function Payment() {
     try {
       setCheckoutData(JSON.parse(savedData));
     } catch (error) {
-      console.log(error);
+      console.error(error);
       navigate("/checkout");
     }
   }, [cart.length, navigate]);
+
+  /* =========================================================
+     CARD INPUT
+     ========================================================= */
 
   const handleCardChange = (e) => {
     let { name, value } = e.target;
@@ -79,11 +90,15 @@ function Payment() {
       value = value.replace(/\D/g, "").slice(0, 4);
     }
 
-    setCard({
-      ...card,
+    setCard((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
+
+  /* =========================================================
+     CARD PREVIEW
+     ========================================================= */
 
   const formatCardNumber = () => {
     if (!card.number) {
@@ -93,8 +108,12 @@ function Payment() {
     return card.number.padEnd(19, "•");
   };
 
+  /* =========================================================
+     PAYMENT
+     ========================================================= */
+
   const handlePayment = async () => {
-    if (!checkoutData) return;
+    if (!checkoutData || loading) return;
 
     if (!card.number || !card.name || !card.expiry || !card.cvv) {
       alert(t("payment.fillCard"));
@@ -103,7 +122,7 @@ function Payment() {
 
     const cleanCardNumber = card.number.replace(/\s/g, "");
 
-    if (cleanCardNumber.length < 16) {
+    if (cleanCardNumber.length !== 16) {
       alert(t("payment.invalidCard"));
       return;
     }
@@ -123,22 +142,25 @@ function Payment() {
 
       const user = JSON.parse(localStorage.getItem("user"));
 
+      /*
+       * IMPORTANT:
+       * Card information is intentionally NOT sent to the backend.
+       *
+       * This endpoint creates the normal order that appears
+       * in the admin panel.
+       */
+
       await API.post("/orders", {
         userId: user?.id,
 
         customerName: checkoutData.customerName,
-
         phone: checkoutData.phone,
-
         city: checkoutData.city,
-
         address: checkoutData.address,
-
         notes: checkoutData.notes,
 
         items: cart.map((item) => ({
           productId: item.id,
-
           quantity: item.quantity,
 
           size:
@@ -159,7 +181,7 @@ function Payment() {
 
       navigate("/order-success");
     } catch (error) {
-      console.log(error.response?.data || error);
+      console.error(error.response?.data || error);
 
       alert(error.response?.data?.message || t("payment.paymentError"));
     } finally {
@@ -171,310 +193,142 @@ function Payment() {
     return null;
   }
 
+  /* =========================================================
+     TOTALS
+     ========================================================= */
+
   const subtotal = Number(checkoutData.subtotal || 0);
   const total = Number(checkoutData.total || subtotal);
   const discount = Number(checkoutData.discount || 0);
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "#f7f7f7",
-        py: {
-          xs: 3,
-          md: 5,
-        },
-        px: {
-          xs: 2,
-          md: 5,
-        },
-      }}
-    >
-      <Box
-        sx={{
-          maxWidth: 1100,
-          mx: "auto",
-        }}
-      >
-        {/* HEADER */}
+    <Box className="payment-page">
+      <Box className="payment-container">
+        {/* =====================================================
+            HEADER
+        ===================================================== */}
 
-        <Box sx={{ mb: 4 }}>
-          <Typography
-            sx={{
-              fontSize: {
-                xs: 30,
-                md: 42,
-              },
-              fontWeight: 900,
-              letterSpacing: 2,
-              color: "#111",
-            }}
-          >
-            {t("payment.title")}
-          </Typography>
+        <Box className="payment-header">
+          <Box>
+            <Typography className="payment-eyebrow">ZYA CHECKOUT</Typography>
 
-          <Typography
-            sx={{
-              mt: 0.5,
-              color: "#777",
-              fontSize: 14,
-            }}
-          >
-            {t("payment.subtitle")}
-          </Typography>
+            <Typography className="payment-title">
+              {t("payment.title")}
+            </Typography>
+
+            <Typography className="payment-subtitle">
+              {t("payment.subtitle")}
+            </Typography>
+          </Box>
         </Box>
 
-        {/* PROGRESS */}
+        {/* =====================================================
+            PROGRESS
+        ===================================================== */}
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mb: 4,
-            gap: {
-              xs: 1,
-              md: 2,
-            },
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 12,
-              color: "#999",
-              fontWeight: 700,
-            }}
-          >
-            {t("payment.cart")}
-          </Typography>
+        <Box className="payment-progress">
+          <Box className="progress-step progress-done">
+            <Box className="progress-number">✓</Box>
 
-          <Box
-            sx={{
-              width: {
-                xs: 25,
-                md: 45,
-              },
-              height: 1,
-              background: "#ddd",
-            }}
-          />
+            <Typography>{t("payment.cart")}</Typography>
+          </Box>
 
-          <Typography
-            sx={{
-              fontSize: 12,
-              color: "#999",
-              fontWeight: 700,
-            }}
-          >
-            {t("payment.checkout")}
-          </Typography>
+          <Box className="progress-line progress-active" />
 
-          <Box
-            sx={{
-              width: {
-                xs: 25,
-                md: 45,
-              },
-              height: 1,
-              background: "#111",
-            }}
-          />
+          <Box className="progress-step progress-done">
+            <Box className="progress-number">✓</Box>
 
-          <Typography
-            sx={{
-              fontSize: 12,
-              color: "#111",
-              fontWeight: 800,
-            }}
-          >
-            {t("payment.payment")}
-          </Typography>
+            <Typography>{t("payment.checkout")}</Typography>
+          </Box>
+
+          <Box className="progress-line progress-current" />
+
+          <Box className="progress-step progress-current-step">
+            <Box className="progress-number">3</Box>
+
+            <Typography>{t("payment.payment")}</Typography>
+          </Box>
         </Box>
 
-        <Grid container spacing={3}>
-          {/* LEFT SIDE */}
+        {/* =====================================================
+            MAIN
+            كل شيء تحت بعض وبنفس العرض
+        ===================================================== */}
 
-          <Grid item xs={12} md={7}>
-            <Paper
-              sx={{
-                p: {
-                  xs: 2,
-                  md: 3,
-                },
-                borderRadius: 3,
-                background: "#fff",
-                boxShadow: "0 15px 40px rgba(0,0,0,.05)",
-              }}
-            >
+        <Box className="payment-layout">
+          {/* ===================================================
+              PAYMENT CARD
+          =================================================== */}
+
+          <Box className="payment-column">
+            <Paper className="payment-card">
               {/* CARD PREVIEW */}
 
-              <Box
-                sx={{
-                  position: "relative",
-                  height: {
-                    xs: 200,
-                    md: 230,
-                  },
-                  borderRadius: 3,
-                  background: "linear-gradient(135deg, #111 0%, #292929 100%)",
-                  color: "#fff",
-                  p: {
-                    xs: 2.5,
-                    md: 3,
-                  },
-                  mb: 4,
-                  overflow: "hidden",
-                  boxShadow: "0 15px 30px rgba(0,0,0,.18)",
-                }}
-              >
-                {/* CARD DECORATION */}
+              <Box className="credit-card-preview">
+                <Box className="card-glow card-glow-one" />
+                <Box className="card-glow card-glow-two" />
 
-                <Box
-                  sx={{
-                    position: "absolute",
-                    width: 180,
-                    height: 180,
-                    borderRadius: "50%",
-                    border: "1px solid rgba(255,255,255,.08)",
-                    right: -60,
-                    top: -60,
-                  }}
-                />
+                <Box className="card-top">
+                  <Typography className="card-brand">ZYA</Typography>
 
-                <Box
-                  sx={{
-                    position: "absolute",
-                    width: 130,
-                    height: 130,
-                    borderRadius: "50%",
-                    border: "1px solid rgba(255,255,255,.08)",
-                    right: 20,
-                    bottom: -80,
-                  }}
-                />
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    position: "relative",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: 17,
-                      fontWeight: 900,
-                      letterSpacing: 3,
-                    }}
-                  >
-                    ZYA
-                  </Typography>
-
-                  <CreditCardIcon
-                    sx={{
-                      fontSize: 30,
-                      opacity: 0.9,
-                    }}
-                  />
+                  <Box className="card-type">
+                    <CreditCardIcon />
+                  </Box>
                 </Box>
 
-                <Typography
-                  sx={{
-                    position: "relative",
-                    mt: {
-                      xs: 5,
-                      md: 6,
-                    },
-                    fontSize: {
-                      xs: 18,
-                      md: 22,
-                    },
-                    letterSpacing: 2,
-                    fontWeight: 600,
-                    fontFamily: "monospace",
-                  }}
-                >
+                <Box className="card-chip">
+                  <Box />
+                  <Box />
+                  <Box />
+                  <Box />
+                </Box>
+
+                <Typography className="card-number">
                   {formatCardNumber()}
                 </Typography>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-end",
-                    position: "absolute",
-                    left: {
-                      xs: 20,
-                      md: 24,
-                    },
-                    right: {
-                      xs: 20,
-                      md: 24,
-                    },
-                    bottom: {
-                      xs: 18,
-                      md: 22,
-                    },
-                  }}
-                >
+                <Box className="card-bottom">
                   <Box>
-                    <Typography
-                      sx={{
-                        fontSize: 8,
-                        opacity: 0.6,
-                        letterSpacing: 1,
-                      }}
-                    >
+                    <Typography className="card-label">
                       {t("payment.cardholder")}
                     </Typography>
 
-                    <Typography
-                      sx={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: 1,
-                      }}
-                    >
+                    <Typography className="card-value">
                       {card.name || "YOUR NAME"}
                     </Typography>
                   </Box>
 
                   <Box>
-                    <Typography
-                      sx={{
-                        fontSize: 8,
-                        opacity: 0.6,
-                        letterSpacing: 1,
-                      }}
-                    >
+                    <Typography className="card-label">
                       {t("payment.expires")}
                     </Typography>
 
-                    <Typography
-                      sx={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography className="card-value">
                       {card.expiry || "MM/YY"}
                     </Typography>
                   </Box>
                 </Box>
               </Box>
 
-              {/* PAYMENT FORM */}
+              {/* FORM HEADER */}
 
-              <Typography
-                sx={{
-                  fontSize: 18,
-                  fontWeight: 800,
-                  mb: 2,
-                }}
-              >
-                {t("payment.cardDetails")}
-              </Typography>
+              <Box className="payment-section-header">
+                <Box className="section-icon">
+                  <CreditCardIcon />
+                </Box>
+
+                <Box>
+                  <Typography className="section-title">
+                    {t("payment.cardDetails")}
+                  </Typography>
+
+                  <Typography className="section-description">
+                    Enter your card details to continue
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* FORM */}
 
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -485,28 +339,18 @@ function Payment() {
                     value={card.number}
                     onChange={handleCardChange}
                     placeholder="1234 5678 9012 3456"
+                    autoComplete="cc-number"
                     inputProps={{
                       inputMode: "numeric",
                     }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <CreditCardIcon
-                            sx={{
-                              color: "#777",
-                              fontSize: 20,
-                            }}
-                          />
+                          <CreditCardIcon className="input-icon" />
                         </InputAdornment>
                       ),
                     }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        background: "#fafafa",
-                        height: 50,
-                      },
-                    }}
+                    className="payment-input"
                   />
                 </Grid>
 
@@ -518,13 +362,8 @@ function Payment() {
                     value={card.name}
                     onChange={handleCardChange}
                     placeholder="JOHN DOE"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        background: "#fafafa",
-                        height: 50,
-                      },
-                    }}
+                    autoComplete="cc-name"
+                    className="payment-input"
                   />
                 </Grid>
 
@@ -536,16 +375,11 @@ function Payment() {
                     value={card.expiry}
                     onChange={handleCardChange}
                     placeholder="MM/YY"
+                    autoComplete="cc-exp"
                     inputProps={{
                       inputMode: "numeric",
                     }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        background: "#fafafa",
-                        height: 50,
-                      },
-                    }}
+                    className="payment-input"
                   />
                 </Grid>
 
@@ -558,207 +392,139 @@ function Payment() {
                     onChange={handleCardChange}
                     placeholder="123"
                     type="password"
+                    autoComplete="cc-csc"
                     inputProps={{
                       inputMode: "numeric",
                     }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        background: "#fafafa",
-                        height: 50,
-                      },
-                    }}
+                    className="payment-input"
                   />
                 </Grid>
               </Grid>
 
               {/* SECURITY */}
 
-              <Box
-                sx={{
-                  mt: 3,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  color: "#777",
-                }}
-              >
-                <LockOutlinedIcon
-                  sx={{
-                    fontSize: 18,
-                  }}
-                />
+              <Box className="security-box">
+                <Box className="security-icon">
+                  <LockOutlinedIcon />
+                </Box>
 
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                  }}
-                >
-                  {t("payment.secure")}
-                </Typography>
+                <Box>
+                  <Typography className="security-title">
+                    Secure checkout
+                  </Typography>
+
+                  <Typography className="security-text">
+                    {t("payment.secure")}
+                  </Typography>
+                </Box>
               </Box>
 
-              {/* PAY BUTTON */}
+              {/* PAY */}
 
               <Button
                 fullWidth
                 onClick={handlePayment}
                 disabled={loading}
-                sx={{
-                  mt: 3,
-                  height: 52,
-                  borderRadius: 2,
-                  background: "#111",
-                  color: "#fff",
-                  fontSize: 14,
-                  fontWeight: 800,
-                  letterSpacing: 1,
-                  "&:hover": {
-                    background: "#333",
-                  },
-                  "&:disabled": {
-                    background: "#999",
-                    color: "#fff",
-                  },
-                }}
+                className="pay-button"
               >
-                {loading
-                  ? t("payment.processing")
-                  : `${t("payment.payNow")} ${total.toFixed(2)} ${t(
-                      "payment.currency",
-                    )}`}
+                {loading ? (
+                  <Box className="pay-loading">
+                    <span className="loading-dot" />
+                    {t("payment.processing")}
+                  </Box>
+                ) : (
+                  <>
+                    <LockOutlinedIcon />
+
+                    <span>{t("payment.payNow")}</span>
+
+                    <span className="pay-price">
+                      {total.toFixed(2)} {t("payment.currency")}
+                    </span>
+                  </>
+                )}
               </Button>
+
+              {/* BACK */}
 
               <Button
                 fullWidth
                 onClick={() => navigate("/checkout")}
                 disabled={loading}
                 startIcon={<ArrowBackIcon />}
-                sx={{
-                  mt: 1,
-                  height: 45,
-                  borderRadius: 2,
-                  color: "#555",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  "&:hover": {
-                    background: "#f5f5f5",
-                  },
-                }}
+                className="back-button"
               >
                 {t("payment.backToCheckout")}
               </Button>
             </Paper>
-          </Grid>
+          </Box>
 
-          {/* RIGHT SIDE */}
+          {/* ===================================================
+              SUMMARY
+          =================================================== */}
 
-          <Grid item xs={12} md={5}>
-            <Paper
-              sx={{
-                borderRadius: 3,
-                background: "#fff",
-                boxShadow: "0 15px 40px rgba(0,0,0,.05)",
-                overflow: "hidden",
-              }}
-            >
-              <Box
-                sx={{
-                  px: 3,
-                  py: 2.5,
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: 18,
-                    fontWeight: 800,
-                  }}
-                >
-                  {t("payment.orderSummary")}
-                </Typography>
+          <Box className="summary-column">
+            <Paper className="summary-card">
+              {/* SUMMARY HEADER */}
+
+              <Box className="summary-header">
+                <Box>
+                  <Typography className="summary-title">
+                    {t("payment.orderSummary")}
+                  </Typography>
+
+                  <Typography className="summary-count">
+                    {cart.length} {cart.length === 1 ? "item" : "items"}
+                  </Typography>
+                </Box>
+
+                <Box className="secure-badge">{t("payment.secure")}</Box>
               </Box>
 
-              <Box
-                sx={{
-                  px: 3,
-                  py: 2.5,
-                }}
-              >
-                {/* PRODUCTS */}
+              {/* PRODUCTS */}
 
+              <Box className="summary-products">
                 {cart.map((item) => (
                   <Box
                     key={`${item.id}-${item.size}-${item.color}`}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      mb: 2,
-                    }}
+                    className="summary-product"
                   >
-                    <Box
-                      sx={{
-                        width: 55,
-                        height: 65,
-                        borderRadius: 2,
-                        background: "#f5f5f5",
-                        overflow: "hidden",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {item.image && (
-                        <Box
-                          component="img"
-                          src={item.image}
-                          alt={item.name}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
+                    <Box className="product-image">
+                      {item.image ? (
+                        <Box component="img" src={item.image} alt={item.name} />
+                      ) : (
+                        <CreditCardIcon />
                       )}
+
+                      <Box className="product-quantity">{item.quantity}</Box>
                     </Box>
 
-                    <Box
-                      sx={{
-                        minWidth: 0,
-                        flex: 1,
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "#222",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
+                    <Box className="product-details">
+                      <Typography className="product-name">
                         {item.name}
                       </Typography>
 
-                      <Typography
-                        sx={{
-                          fontSize: 12,
-                          color: "#888",
-                          mt: 0.3,
-                        }}
-                      >
+                      <Typography className="product-meta">
                         {t("payment.quantity")}: {item.quantity}
                       </Typography>
+
+                      {item.size && (
+                        <Typography className="product-meta">
+                          {t("payment.size")}:{" "}
+                          {typeof item.size === "object"
+                            ? Object.values(item.size).join(" / ")
+                            : item.size}
+                        </Typography>
+                      )}
+
+                      {item.color && (
+                        <Typography className="product-meta">
+                          {t("payment.color")}: {item.color}
+                        </Typography>
+                      )}
                     </Box>
 
-                    <Typography
-                      sx={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        whiteSpace: "nowrap",
-                        direction: "ltr",
-                      }}
-                    >
+                    <Typography className="product-price">
                       {(
                         Number(item.price || 0) * Number(item.quantity || 1)
                       ).toFixed(2)}{" "}
@@ -766,159 +532,132 @@ function Payment() {
                     </Typography>
                   </Box>
                 ))}
+              </Box>
 
-                <Divider
-                  sx={{
-                    my: 2,
-                  }}
-                />
+              <Divider />
 
-                {/* SUBTOTAL */}
+              {/* CALCULATIONS */}
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mb: 1.5,
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      color: "#777",
-                      fontSize: 14,
-                    }}
-                  >
-                    {t("payment.subtotal")}
-                  </Typography>
+              <Box className="summary-calculations">
+                <Box className="summary-row">
+                  <Typography>{t("payment.subtotal")}</Typography>
 
-                  <Typography
-                    sx={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      direction: "ltr",
-                    }}
-                  >
+                  <Typography>
                     {subtotal.toFixed(2)} {t("payment.currency")}
                   </Typography>
                 </Box>
 
-                {/* DISCOUNT */}
-
                 {discount > 0 && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1.5,
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: "#777",
-                        fontSize: 14,
-                      }}
-                    >
-                      {t("payment.discount")}
-                    </Typography>
+                  <Box className="summary-row discount-row">
+                    <Typography>{t("payment.discount")}</Typography>
 
-                    <Typography
-                      sx={{
-                        color: "#16803c",
-                        fontSize: 14,
-                        fontWeight: 700,
-                        direction: "ltr",
-                      }}
-                    >
-                      -{discount}%
-                    </Typography>
+                    <Typography>-{discount}%</Typography>
                   </Box>
                 )}
 
-                <Divider
-                  sx={{
-                    my: 2,
-                  }}
-                />
+                <Divider className="summary-divider" />
 
-                {/* TOTAL */}
+                <Box className="total-row">
+                  <Typography>{t("payment.total")}</Typography>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontSize: 16,
-                      fontWeight: 800,
-                    }}
-                  >
-                    {t("payment.total")}
-                  </Typography>
+                  <Box className="total-price">
+                    <Typography>{total.toFixed(2)}</Typography>
 
-                  <Typography
-                    sx={{
-                      fontSize: 23,
-                      fontWeight: 900,
-                      direction: "ltr",
-                    }}
-                  >
-                    {total.toFixed(2)}{" "}
-                    <Box
-                      component="span"
-                      sx={{
-                        fontSize: 12,
-                        color: "#666",
-                      }}
-                    >
-                      {t("payment.currency")}
-                    </Box>
-                  </Typography>
+                    <span>{t("payment.currency")}</span>
+                  </Box>
                 </Box>
               </Box>
             </Paper>
 
-            {/* SHIPPING INFO */}
+            {/* =================================================
+                SHIPPING
+            ================================================= */}
 
-            <Paper
-              sx={{
-                mt: 2,
-                p: 2.5,
-                borderRadius: 3,
-                background: "#fff",
-                boxShadow: "0 10px 30px rgba(0,0,0,.04)",
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: 15,
-                  fontWeight: 800,
-                  mb: 1.5,
-                }}
-              >
-                {t("payment.shippingInfo")}
-              </Typography>
+            <Paper className="shipping-card">
+              <Box className="shipping-icon">
+                <LocalShippingOutlinedIcon />
+              </Box>
 
-              <Typography
-                sx={{
-                  fontSize: 13,
-                  color: "#666",
-                  lineHeight: 1.8,
-                }}
-              >
-                {checkoutData.customerName}
-                <br />
-                {checkoutData.phone}
-                <br />
-                {checkoutData.city}
-                <br />
-                {checkoutData.address}
-              </Typography>
+              <Box className="shipping-content">
+                <Box className="shipping-heading">
+                  <Box>
+                    <Typography className="shipping-title">
+                      {t("payment.shippingInfo")}
+                    </Typography>
+
+                    <Typography className="shipping-subtitle">
+                      {t("payment.deliveryDetails")}
+                    </Typography>
+                  </Box>
+
+                  <Button
+                    onClick={() => navigate("/checkout")}
+                    disabled={loading}
+                    className="update-button"
+                  >
+                    {t("payment.update")}
+                  </Button>
+                </Box>
+
+                {/* SHIPPING DETAILS */}
+
+                <Box className="shipping-details">
+                  <Box className="shipping-detail-row">
+                    <Typography className="shipping-label">
+                      {t("payment.customer")}
+                    </Typography>
+
+                    <Typography className="shipping-value">
+                      {checkoutData.customerName}
+                    </Typography>
+                  </Box>
+
+                  <Box className="shipping-detail-row">
+                    <Typography className="shipping-label">
+                      {t("payment.phone")}
+                    </Typography>
+
+                    <Typography className="shipping-value" dir="ltr">
+                      {checkoutData.phone}
+                    </Typography>
+                  </Box>
+
+                  <Box className="shipping-detail-row">
+                    <Typography className="shipping-label">
+                      {t("payment.city")}
+                    </Typography>
+
+                    <Typography className="shipping-value">
+                      {checkoutData.city}
+                    </Typography>
+                  </Box>
+
+                  <Box className="shipping-detail-row">
+                    <Typography className="shipping-label">
+                      {t("payment.address")}
+                    </Typography>
+
+                    <Typography className="shipping-value">
+                      {checkoutData.address}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
+
+        {/* =====================================================
+            FOOTER
+        ===================================================== */}
+
+        <Box className="payment-footer">
+          <LockOutlinedIcon />
+
+          <Typography>
+            Your payment information is protected and never stored.
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

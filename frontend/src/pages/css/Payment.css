@@ -1,0 +1,1727 @@
+/* =========================================================
+   ZYA PAYMENT PAGE
+   ========================================================= */
+
+.payment-page {
+  min-height: 100vh;
+  width: 100%;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(0, 0, 0, 0.035), transparent 28%),
+    linear-gradient(180deg, #fafafa 0%, #f4f4f4 100%);
+
+  padding: 42px 24px 55px;
+
+  color: #111;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.payment-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.payment-header {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.payment-eyebrow {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 3px !important;
+  color: #888 !important;
+  margin-bottom: 7px !important;
+}
+
+.payment-title {
+  font-size: 42px !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  letter-spacing: -1.4px !important;
+  color: #111 !important;
+}
+
+.payment-subtitle {
+  margin-top: 8px !important;
+  color: #777 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.payment-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 620px;
+
+  margin: 0 auto 38px;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #aaa;
+
+  white-space: nowrap;
+}
+
+.progress-step p,
+.progress-step .MuiTypography-root {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.progress-number {
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #e8e8e8;
+  color: #999;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.progress-done {
+  color: #222;
+}
+
+.progress-done .progress-number {
+  background: #111;
+  color: #fff;
+}
+
+.progress-current-step {
+  color: #111;
+}
+
+.progress-current-step .progress-number {
+  background: #111;
+  color: #fff;
+
+  box-shadow: 0 0 0 5px rgba(17, 17, 17, 0.07);
+}
+
+.progress-line {
+  flex: 1;
+
+  max-width: 100px;
+
+  height: 1px;
+
+  margin: 0 13px;
+
+  background: #ddd;
+}
+
+.progress-active,
+.progress-current {
+  background: #222;
+}
+
+/* =========================================================
+   MAIN LAYOUT
+   كل العناصر تحت بعض
+   وكلها نفس العرض
+   ========================================================= */
+
+.payment-layout {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+
+  box-sizing: border-box;
+}
+
+.payment-column,
+.summary-column {
+  width: 100%;
+  max-width: 100%;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   GENERAL CARDS
+   ========================================================= */
+
+.payment-card,
+.summary-card,
+.shipping-card {
+  width: 100%;
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(0, 0, 0, 0.055) !important;
+
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.045),
+    0 2px 7px rgba(0, 0, 0, 0.025) !important;
+}
+
+/* =========================================================
+   PAYMENT CARD
+   ========================================================= */
+
+.payment-card {
+  padding: 28px;
+
+  border-radius: 22px !important;
+
+  background: #fff !important;
+}
+
+/* =========================================================
+   CREDIT CARD
+   ========================================================= */
+
+.credit-card-preview {
+  position: relative;
+
+  width: 100%;
+  height: 235px;
+
+  padding: 25px;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  background: linear-gradient(135deg, #090909 0%, #171717 46%, #303030 100%);
+
+  box-shadow:
+    0 22px 42px rgba(0, 0, 0, 0.19),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  margin-bottom: 31px;
+
+  box-sizing: border-box;
+}
+
+.credit-card-preview::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.045),
+    transparent 55%
+  );
+
+  pointer-events: none;
+}
+
+.card-glow {
+  position: absolute;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  pointer-events: none;
+}
+
+.card-glow-one {
+  width: 280px;
+  height: 280px;
+
+  right: -105px;
+  top: -160px;
+}
+
+.card-glow-two {
+  width: 220px;
+  height: 220px;
+
+  right: -30px;
+  bottom: -165px;
+}
+
+.card-top {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-brand {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: 4px !important;
+}
+
+.card-type {
+  width: 39px;
+  height: 39px;
+
+  border: 1px solid rgba(255, 255, 255, 0.17);
+
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.card-type svg {
+  font-size: 22px;
+  opacity: 0.9;
+}
+
+.card-chip {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 28px;
+
+  width: 42px;
+  height: 31px;
+
+  border-radius: 7px;
+
+  background: linear-gradient(135deg, #d9d9d9, #898989);
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.card-chip div {
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.card-number {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 20px !important;
+
+  font-family: "Courier New", monospace !important;
+
+  font-size: 21px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 2.1px !important;
+
+  white-space: nowrap;
+}
+
+.card-bottom {
+  position: absolute;
+
+  z-index: 2;
+
+  left: 25px;
+  right: 25px;
+  bottom: 22px;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-label {
+  font-size: 8px !important;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1.2px !important;
+
+  color: rgba(255, 255, 255, 0.53) !important;
+
+  margin-bottom: 3px !important;
+}
+
+.card-value {
+  max-width: 220px;
+
+  font-size: 12px !important;
+  font-weight: 700 !important;
+
+  letter-spacing: 1px !important;
+
+  text-transform: uppercase;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.payment-section-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 21px;
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 12px;
+
+  background: #f1f1f1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.section-icon svg {
+  font-size: 20px;
+  color: #222;
+}
+
+.section-title {
+  font-size: 17px !important;
+
+  font-weight: 850 !important;
+
+  line-height: 1.2 !important;
+}
+
+.section-description {
+  margin-top: 3px !important;
+
+  font-size: 11px !important;
+
+  color: #999 !important;
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.payment-input {
+  width: 100%;
+
+  background: #fafafa;
+
+  border-radius: 13px;
+}
+
+.payment-input .MuiOutlinedInput-root {
+  min-height: 53px;
+
+  border-radius: 13px;
+
+  transition: all 0.2s ease;
+}
+
+.payment-input .MuiOutlinedInput-notchedOutline {
+  border-color: #e5e5e5;
+}
+
+.payment-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #bbb;
+}
+
+.payment-input .MuiOutlinedInput-root.Mui-focused {
+  background: #fff;
+}
+
+.payment-input
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #111;
+
+  border-width: 1px;
+}
+
+.payment-input .MuiInputLabel-root {
+  color: #888;
+
+  font-size: 13px;
+}
+
+.payment-input .MuiInputLabel-root.Mui-focused {
+  color: #111;
+}
+
+.payment-input input {
+  font-size: 14px;
+}
+
+.input-icon {
+  color: #999 !important;
+
+  font-size: 19px !important;
+}
+
+/* =========================================================
+   SECURITY
+   ========================================================= */
+
+.security-box {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  margin-top: 23px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #ececec;
+
+  border-radius: 13px;
+
+  background: #fafafa;
+}
+
+.security-icon {
+  width: 31px;
+  height: 31px;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ededed;
+}
+
+.security-icon svg {
+  font-size: 16px;
+
+  color: #555;
+}
+
+.security-title {
+  font-size: 11px !important;
+
+  font-weight: 800 !important;
+
+  color: #333 !important;
+}
+
+.security-text {
+  font-size: 10px !important;
+
+  color: #999 !important;
+
+  margin-top: 1px !important;
+}
+
+/* =========================================================
+   PAY BUTTON
+   ========================================================= */
+
+.pay-button {
+  position: relative;
+
+  overflow: hidden;
+
+  width: 100%;
+
+  height: 57px !important;
+
+  margin-top: 22px !important;
+
+  border-radius: 14px !important;
+
+  background: #111 !important;
+
+  color: #fff !important;
+
+  font-size: 13px !important;
+
+  font-weight: 800 !important;
+
+  letter-spacing: 0.4px !important;
+
+  text-transform: none !important;
+
+  transition: all 0.25s ease !important;
+}
+
+.pay-button::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+
+  transform: translateX(-100%);
+
+  transition: transform 0.55s ease;
+}
+
+.pay-button:hover::before {
+  transform: translateX(100%);
+}
+
+.pay-button:hover {
+  background: #242424 !important;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.16);
+}
+
+.pay-button:disabled {
+  background: #999 !important;
+
+  color: #fff !important;
+}
+
+.pay-button svg {
+  font-size: 17px;
+}
+
+.pay-button span {
+  position: relative;
+
+  z-index: 2;
+}
+
+.pay-price {
+  margin-left: 5px;
+
+  opacity: 0.72;
+}
+
+.pay-loading {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+}
+
+.loading-dot {
+  width: 13px;
+  height: 13px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+
+  border-top-color: #fff;
+
+  border-radius: 50%;
+
+  animation: payment-spin 0.7s linear infinite;
+}
+
+@keyframes payment-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+  width: 100%;
+
+  height: 44px !important;
+
+  margin-top: 8px !important;
+
+  border-radius: 12px !important;
+
+  color: #555 !important;
+
+  font-size: 12px !important;
+
+  font-weight: 700 !important;
+
+  text-transform: none !important;
+}
+
+.back-button:hover {
+  background: #f5f5f5 !important;
+
+  color: #111 !important;
+}
+
+.back-button svg {
+  font-size: 17px !important;
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.summary-card {
+  width: 100%;
+
+  border-radius: 22px !important;
+
+  overflow: hidden;
+
+  background: #fff !important;
+}
+
+.summary-header {
+  padding: 22px 23px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.summary-title {
+  font-size: 17px !important;
+
+  font-weight: 850 !important;
+}
+
+.summary-count {
+  margin-top: 3px !important;
+
+  font-size: 10px !important;
+
+  color: #999 !important;
+}
+
+.secure-badge {
+  flex-shrink: 0;
+
+  padding: 8px 11px;
+
+  border-radius: 9px;
+
+  background: #f2f2f2;
+
+  color: #555;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   SUMMARY PRODUCTS
+   ========================================================= */
+
+.summary-products {
+  padding: 20px 23px 5px;
+
+  max-height: 330px;
+
+  overflow-y: auto;
+}
+
+.summary-products::-webkit-scrollbar {
+  width: 4px;
+}
+
+.summary-products::-webkit-scrollbar-thumb {
+  background: #ddd;
+
+  border-radius: 10px;
+}
+
+.summary-product {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 15px;
+
+  min-width: 0;
+}
+
+.product-image {
+  position: relative;
+
+  width: 58px;
+  height: 67px;
+
+  flex-shrink: 0;
+
+  overflow: visible;
+
+  border-radius: 12px;
+
+  background: #f3f3f3;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  border-radius: 12px;
+}
+
+.product-image > svg {
+  position: absolute;
+
+  inset: 0;
+
+  margin: auto;
+
+  color: #aaa;
+}
+
+.product-quantity {
+  position: absolute;
+
+  top: -6px;
+  right: -6px;
+
+  min-width: 20px;
+  height: 20px;
+
+  padding: 0 5px;
+
+  border-radius: 20px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #111;
+
+  color: #fff;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  border: 2px solid #fff;
+}
+
+.product-details {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.product-name {
+  font-size: 12px !important;
+
+  font-weight: 750 !important;
+
+  color: #222 !important;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.product-meta {
+  margin-top: 3px !important;
+
+  font-size: 10px !important;
+
+  color: #999 !important;
+}
+
+.product-price {
+  flex-shrink: 0;
+
+  font-size: 11px !important;
+
+  font-weight: 750 !important;
+
+  white-space: nowrap;
+
+  direction: ltr;
+}
+
+/* =========================================================
+   SUMMARY CALCULATIONS
+   ========================================================= */
+
+.summary-calculations {
+  padding: 19px 23px 23px;
+}
+
+.summary-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.summary-row .MuiTypography-root {
+  font-size: 12px !important;
+
+  color: #777;
+}
+
+.summary-row .MuiTypography-root:last-child {
+  color: #222;
+
+  font-weight: 650;
+
+  direction: ltr;
+}
+
+.discount-row .MuiTypography-root:last-child {
+  color: #188345 !important;
+
+  font-weight: 800 !important;
+}
+
+.summary-divider {
+  margin: 17px 0 !important;
+}
+
+.total-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.total-row > .MuiTypography-root {
+  font-size: 14px !important;
+
+  font-weight: 850 !important;
+}
+
+.total-price {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 5px;
+
+  direction: ltr;
+}
+
+.total-price .MuiTypography-root {
+  font-size: 24px !important;
+
+  font-weight: 900 !important;
+
+  letter-spacing: -0.5px;
+}
+
+.total-price span {
+  font-size: 10px;
+
+  color: #777;
+
+  font-weight: 700;
+}
+
+/* =========================================================
+   SHIPPING
+   ========================================================= */
+
+.shipping-card {
+  width: 100%;
+
+  margin-top: 30px;
+
+  padding: 19px;
+
+  border-radius: 18px !important;
+
+  display: flex;
+
+  gap: 13px;
+
+  background: #fff !important;
+}
+
+.shipping-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background: #f1f1f1;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.shipping-icon svg {
+  font-size: 20px;
+
+  color: #333;
+}
+
+.shipping-content {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.shipping-heading {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  width: 100%;
+}
+
+.shipping-title {
+  font-size: 13px !important;
+
+  font-weight: 800 !important;
+
+  margin-bottom: 0 !important;
+}
+
+.shipping-subtitle {
+  margin-top: 2px !important;
+
+  font-size: 10px !important;
+
+  color: #999 !important;
+}
+
+/* =========================================================
+   SHIPPING DETAILS
+   ========================================================= */
+
+.shipping-details {
+  display: grid;
+
+  gap: 0;
+
+  margin-top: 18px;
+
+  border: 1px solid #eeeeee;
+
+  border-radius: 13px;
+
+  overflow: hidden;
+}
+
+.shipping-detail-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 11px 13px;
+
+  background: #fafafa;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.shipping-detail-row:last-child {
+  border-bottom: none;
+}
+
+.shipping-label {
+  flex-shrink: 0;
+
+  font-size: 10px !important;
+
+  font-weight: 700 !important;
+
+  color: #999 !important;
+}
+
+.shipping-value {
+  min-width: 0;
+
+  font-size: 11px !important;
+
+  font-weight: 700 !important;
+
+  color: #222 !important;
+
+  text-align: right;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   UPDATE BUTTON
+   ========================================================= */
+
+.update-button {
+  flex-shrink: 0;
+
+  min-width: 92px !important;
+
+  height: 34px !important;
+
+  padding: 0 13px !important;
+
+  border-radius: 9px !important;
+
+  background: #f2f2f2 !important;
+
+  color: #222 !important;
+
+  font-size: 10px !important;
+
+  font-weight: 800 !important;
+
+  text-transform: none !important;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+.update-button:hover {
+  background: #111 !important;
+
+  color: #fff !important;
+
+  transform: translateY(-1px);
+}
+
+.update-button svg {
+  font-size: 15px !important;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.payment-footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: 27px;
+
+  color: #999;
+}
+
+.payment-footer svg {
+  font-size: 14px;
+}
+
+.payment-footer .MuiTypography-root {
+  font-size: 10px !important;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .payment-page {
+    padding: 34px 18px 45px;
+  }
+
+  .payment-container {
+    max-width: 100%;
+  }
+
+  .payment-title {
+    font-size: 36px !important;
+  }
+
+  .payment-card {
+    padding: 23px;
+  }
+
+  .credit-card-preview {
+    height: 225px;
+  }
+
+  .card-number {
+    font-size: 19px !important;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .payment-page {
+    padding: 22px 12px 35px;
+  }
+
+  .payment-container {
+    max-width: 100%;
+  }
+
+  .payment-header {
+    margin-bottom: 23px;
+
+    padding: 0 3px;
+  }
+
+  .payment-eyebrow {
+    font-size: 9px !important;
+
+    letter-spacing: 2.3px !important;
+  }
+
+  .payment-title {
+    font-size: 29px !important;
+
+    letter-spacing: -0.8px !important;
+  }
+
+  .payment-subtitle {
+    font-size: 12px !important;
+
+    margin-top: 6px !important;
+  }
+
+  /* =======================================================
+     PROGRESS
+     ======================================================= */
+
+  .payment-progress {
+    margin-bottom: 24px;
+  }
+
+  .progress-step {
+    gap: 5px;
+  }
+
+  .progress-step .MuiTypography-root {
+    display: none;
+  }
+
+  .progress-number {
+    width: 27px;
+    height: 27px;
+
+    font-size: 10px;
+  }
+
+  .progress-line {
+    max-width: none;
+
+    margin: 0 7px;
+  }
+
+  /* =======================================================
+     LAYOUT
+     ======================================================= */
+
+  .payment-layout {
+    width: 100%;
+
+    flex-direction: column;
+
+    gap: 16px;
+  }
+
+  .payment-column,
+  .summary-column {
+    width: 100%;
+
+    max-width: 100%;
+  }
+
+  /* =======================================================
+     PAYMENT CARD
+     ======================================================= */
+
+  .payment-card {
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 18px !important;
+  }
+
+  /* =======================================================
+     CREDIT CARD
+     ======================================================= */
+
+  .credit-card-preview {
+    height: 196px;
+
+    padding: 20px;
+
+    border-radius: 17px;
+
+    margin-bottom: 25px;
+  }
+
+  .card-brand {
+    font-size: 15px !important;
+
+    letter-spacing: 3px !important;
+  }
+
+  .card-type {
+    width: 33px;
+    height: 33px;
+
+    border-radius: 9px;
+  }
+
+  .card-type svg {
+    font-size: 18px;
+  }
+
+  .card-chip {
+    margin-top: 21px;
+
+    width: 38px;
+    height: 27px;
+
+    border-radius: 6px;
+  }
+
+  .card-number {
+    margin-top: 16px !important;
+
+    font-size: 16px !important;
+
+    letter-spacing: 1.4px !important;
+  }
+
+  .card-bottom {
+    left: 20px;
+    right: 20px;
+
+    bottom: 17px;
+  }
+
+  .card-label {
+    font-size: 7px !important;
+  }
+
+  .card-value {
+    max-width: 155px;
+
+    font-size: 10px !important;
+  }
+
+  /* =======================================================
+     SECTION
+     ======================================================= */
+
+  .payment-section-header {
+    margin-bottom: 16px;
+  }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 10px;
+  }
+
+  .section-icon svg {
+    font-size: 18px;
+  }
+
+  .section-title {
+    font-size: 15px !important;
+  }
+
+  .section-description {
+    font-size: 9px !important;
+  }
+
+  /* =======================================================
+     INPUTS
+     ======================================================= */
+
+  .payment-input {
+    width: 100%;
+  }
+
+  .payment-input .MuiOutlinedInput-root {
+    min-height: 51px;
+  }
+
+  .payment-input .MuiInputLabel-root {
+    font-size: 12px;
+  }
+
+  .payment-input input {
+    font-size: 13px;
+  }
+
+  /* =======================================================
+     SECURITY
+     ======================================================= */
+
+  .security-box {
+    margin-top: 19px;
+
+    padding: 11px;
+  }
+
+  .security-title {
+    font-size: 10px !important;
+  }
+
+  .security-text {
+    font-size: 9px !important;
+  }
+
+  /* =======================================================
+     PAY
+     ======================================================= */
+
+  .pay-button {
+    height: 54px !important;
+
+    margin-top: 18px !important;
+
+    font-size: 12px !important;
+
+    border-radius: 13px !important;
+  }
+
+  .pay-price {
+    font-size: 11px;
+  }
+
+  .back-button {
+    height: 42px !important;
+
+    font-size: 11px !important;
+  }
+
+  /* =======================================================
+     SUMMARY
+     ======================================================= */
+
+  .summary-card {
+    width: 100%;
+
+    border-radius: 18px !important;
+  }
+
+  .summary-header {
+    padding: 17px;
+  }
+
+  .summary-title {
+    font-size: 15px !important;
+  }
+
+  .summary-count {
+    font-size: 9px !important;
+  }
+
+  .secure-badge {
+    padding: 7px 9px;
+
+    font-size: 8px;
+  }
+
+  .summary-products {
+    padding: 17px 17px 3px;
+
+    max-height: none;
+  }
+
+  .summary-product {
+    gap: 10px;
+
+    margin-bottom: 13px;
+  }
+
+  .product-image {
+    width: 53px;
+    height: 61px;
+
+    border-radius: 10px;
+  }
+
+  .product-image img {
+    border-radius: 10px;
+  }
+
+  .product-name {
+    font-size: 11px !important;
+  }
+
+  .product-meta {
+    font-size: 9px !important;
+  }
+
+  .product-price {
+    font-size: 10px !important;
+  }
+
+  .summary-calculations {
+    padding: 16px 17px 19px;
+  }
+
+  .summary-row .MuiTypography-root {
+    font-size: 11px !important;
+  }
+
+  .total-row > .MuiTypography-root {
+    font-size: 13px !important;
+  }
+
+  .total-price .MuiTypography-root {
+    font-size: 21px !important;
+  }
+
+  /* =======================================================
+     SHIPPING
+     ======================================================= */
+
+  .shipping-card {
+    width: 100%;
+
+    margin-top: 30px;
+
+    padding: 16px;
+
+    border-radius: 16px !important;
+  }
+
+  .shipping-icon {
+    width: 35px;
+    height: 35px;
+
+    border-radius: 10px;
+  }
+
+  .shipping-icon svg {
+    font-size: 17px;
+  }
+
+  .shipping-heading {
+    align-items: center;
+
+    gap: 10px;
+  }
+
+  .shipping-title {
+    font-size: 12px !important;
+  }
+
+  .shipping-subtitle {
+    font-size: 9px !important;
+  }
+
+  .update-button {
+    min-width: 78px !important;
+
+    height: 32px !important;
+
+    padding: 0 9px !important;
+
+    font-size: 9px !important;
+  }
+
+  .shipping-details {
+    margin-top: 15px;
+  }
+
+  .shipping-detail-row {
+    padding: 10px 11px;
+
+    gap: 10px;
+  }
+
+  .shipping-label {
+    font-size: 9px !important;
+  }
+
+  .shipping-value {
+    font-size: 10px !important;
+
+    max-width: 68%;
+  }
+
+  /* =======================================================
+     FOOTER
+     ======================================================= */
+
+  .payment-footer {
+    margin-top: 20px;
+  }
+
+  .payment-footer .MuiTypography-root {
+    font-size: 8px !important;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .payment-page {
+    padding-left: 9px;
+
+    padding-right: 9px;
+  }
+
+  .payment-card {
+    padding: 12px;
+  }
+
+  .credit-card-preview {
+    height: 184px;
+
+    padding: 17px;
+  }
+
+  .card-chip {
+    margin-top: 18px;
+  }
+
+  .card-number {
+    font-size: 14px !important;
+
+    letter-spacing: 1px !important;
+  }
+
+  .card-bottom {
+    left: 17px;
+    right: 17px;
+
+    bottom: 15px;
+  }
+
+  .card-value {
+    max-width: 125px;
+
+    font-size: 9px !important;
+  }
+
+  .pay-button {
+    font-size: 11px !important;
+  }
+
+  .pay-price {
+    font-size: 10px;
+  }
+
+  .shipping-heading {
+    gap: 7px;
+  }
+
+  .update-button {
+    min-width: 72px !important;
+
+    padding: 0 7px !important;
+
+    font-size: 8px !important;
+  }
+
+  .shipping-detail-row {
+    padding: 9px 10px;
+  }
+
+  .shipping-value {
+    max-width: 62%;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pay-button,
+  .pay-button::before,
+  .loading-dot {
+    animation: none !important;
+
+    transition: none !important;
+  }
+}
