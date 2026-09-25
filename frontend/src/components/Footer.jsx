@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, IconButton, Divider } from "@mui/material";
+import { Box, Typography, Grid, IconButton } from "@mui/material";
 
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -270,6 +270,8 @@ function Footer() {
                 gap: 1.4,
               }}
             >
+              {/* PHONE */}
+
               <Box>
                 <Typography
                   sx={{
@@ -280,7 +282,7 @@ function Footer() {
                     textTransform: "uppercase",
                   }}
                 >
-                  Phone
+                  {t("footer.phone")}
                 </Typography>
 
                 <Typography
@@ -301,6 +303,8 @@ function Footer() {
                 </Typography>
               </Box>
 
+              {/* EMAIL */}
+
               <Box>
                 <Typography
                   sx={{
@@ -311,7 +315,7 @@ function Footer() {
                     textTransform: "uppercase",
                   }}
                 >
-                  Email
+                  {t("footer.email")}
                 </Typography>
 
                 <Typography
@@ -332,6 +336,8 @@ function Footer() {
                 </Typography>
               </Box>
 
+              {/* LOCATION */}
+
               <Box>
                 <Typography
                   sx={{
@@ -342,7 +348,7 @@ function Footer() {
                     textTransform: "uppercase",
                   }}
                 >
-                  Location
+                  {t("footer.location")}
                 </Typography>
 
                 <Typography
@@ -401,7 +407,7 @@ function Footer() {
               textTransform: "uppercase",
             }}
           >
-            Fashion · Style · ZYA
+            {t("footer.fashion")} · {t("footer.style")} · ZYA
           </Typography>
         </Box>
       </Box>

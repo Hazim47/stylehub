@@ -8,28 +8,21 @@ import {
   Divider,
 } from "@mui/material";
 
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
-import API from "../api/axios";
 
 import useCartStore from "../store/cartStore";
 
 function Checkout() {
+  const navigate = useNavigate();
+
   const cart = useCartStore((state) => state.cart);
-
   const coupon = useCartStore((state) => state.coupon);
-
   const discount = useCartStore((state) => state.discount);
-
   const finalTotal = useCartStore((state) => state.finalTotal);
-  const user = JSON.parse(localStorage.getItem("user"));
-  const clearCart = useCartStore((state) => state.clearCart);
+
   const { t } = useTranslation();
-  const clearCoupon = useCartStore((state) => state.clearCoupon);
 
   const [form, setForm] = useState({
     customerName: "",
@@ -39,77 +32,47 @@ function Checkout() {
     notes: "",
   });
 
-  const [loading, setLoading] = useState(false);
-
   const handleChange = (e) => {
     setForm({
       ...form,
-
       [e.target.name]: e.target.value,
     });
   };
 
-  const submitOrder = async () => {
+  const subtotal = cart.reduce(
+    (total, item) =>
+      total + Number(item.price || 0) * Number(item.quantity || 1),
+    0,
+  );
+
+  const total = coupon ? Number(finalTotal || 0) : subtotal;
+
+  const goToPayment = () => {
     if (cart.length === 0) {
-      alert("السلة فارغة");
+      alert(t("checkout.emptyCart"));
       return;
     }
 
     if (!form.customerName || !form.phone || !form.city || !form.address) {
-      alert("يرجى تعبئة جميع معلومات التوصيل");
+      alert(t("checkout.fillInfo"));
       return;
     }
 
-    try {
-      setLoading(true);
+    const checkoutData = {
+      customerName: form.customerName,
+      phone: form.phone,
+      city: form.city,
+      address: form.address,
+      notes: form.notes,
+      couponCode: coupon?.code || null,
+      discount: discount || 0,
+      subtotal,
+      total,
+    };
 
-      const res = await API.post("/orders", {
-        userId: user?.id,
-        customerName: form.customerName,
+    sessionStorage.setItem("zyaCheckoutData", JSON.stringify(checkoutData));
 
-        phone: form.phone,
-
-        city: form.city,
-
-        address: form.address,
-
-        notes: form.notes,
-
-        items: cart.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-
-          size:
-            typeof item.size === "object"
-              ? JSON.stringify(item.size)
-              : item.size,
-
-          color: item.color,
-        })),
-
-        couponCode: coupon?.code || null,
-      });
-
-      clearCart();
-
-      clearCoupon();
-
-      setForm({
-        customerName: "",
-        phone: "",
-        city: "",
-        address: "",
-        notes: "",
-      });
-
-      alert("تم إرسال طلبك بنجاح");
-    } catch (error) {
-      console.log(error.response?.data || error);
-
-      alert(error.response?.data?.message || "حدث خطأ أثناء إرسال الطلب");
-    } finally {
-      setLoading(false);
-    }
+    navigate("/payment");
   };
 
   return (
@@ -132,22 +95,15 @@ function Checkout() {
       >
         {/* TITLE */}
 
-        <Box
-          sx={{
-            mb: 3,
-          }}
-        >
+        <Box sx={{ mb: 3 }}>
           <Typography
             sx={{
               fontSize: {
                 xs: 30,
                 md: 42,
               },
-
               fontWeight: 800,
-
               letterSpacing: 2,
-
               color: "#111",
             }}
           >
@@ -157,9 +113,7 @@ function Checkout() {
           <Typography
             sx={{
               color: "#777",
-
               mt: 0.5,
-
               fontSize: 14,
             }}
           >
@@ -173,11 +127,8 @@ function Checkout() {
               xs: 2,
               md: 3,
             },
-
             borderRadius: 3,
-
             background: "#fff",
-
             boxShadow: "0 15px 40px rgba(0,0,0,.06)",
           }}
         >
@@ -186,9 +137,7 @@ function Checkout() {
           <Typography
             sx={{
               fontSize: 18,
-
               fontWeight: 800,
-
               mb: 2,
             }}
           >
@@ -206,12 +155,9 @@ function Checkout() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
-
                     background: "#fafafa",
-
                     height: 48,
                   },
-
                   "& .MuiInputLabel-root": {
                     fontSize: 14,
                   },
@@ -229,12 +175,9 @@ function Checkout() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
-
                     background: "#fafafa",
-
                     height: 48,
                   },
-
                   "& .MuiInputLabel-root": {
                     fontSize: 14,
                   },
@@ -243,20 +186,14 @@ function Checkout() {
             </Grid>
           </Grid>
 
-          <Divider
-            sx={{
-              my: 3,
-            }}
-          />
+          <Divider sx={{ my: 3 }} />
 
-          {/* ADDRESS */}
+          {/* SHIPPING */}
 
           <Typography
             sx={{
               fontSize: 18,
-
               fontWeight: 800,
-
               mb: 2,
             }}
           >
@@ -274,12 +211,9 @@ function Checkout() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
-
                     background: "#fafafa",
-
                     height: 48,
                   },
-
                   "& .MuiInputLabel-root": {
                     fontSize: 14,
                   },
@@ -297,12 +231,9 @@ function Checkout() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
-
                     background: "#fafafa",
-
                     height: 48,
                   },
-
                   "& .MuiInputLabel-root": {
                     fontSize: 14,
                   },
@@ -314,6 +245,7 @@ function Checkout() {
               <TextField
                 fullWidth
                 multiline
+                minRows={1}
                 label={t("checkout.notes")}
                 name="notes"
                 value={form.notes}
@@ -321,12 +253,8 @@ function Checkout() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
-
                     background: "#fafafa",
-
-                    height: 48,
                   },
-
                   "& .MuiInputLabel-root": {
                     fontSize: 14,
                   },
@@ -346,7 +274,6 @@ function Checkout() {
               overflow: "hidden",
             }}
           >
-            {/* HEADER */}
             <Box
               sx={{
                 px: {
@@ -368,7 +295,6 @@ function Checkout() {
               </Typography>
             </Box>
 
-            {/* CONTENT */}
             <Box
               sx={{
                 px: {
@@ -379,6 +305,7 @@ function Checkout() {
               }}
             >
               {/* SUBTOTAL */}
+
               <Box
                 sx={{
                   display: "flex",
@@ -404,19 +331,12 @@ function Checkout() {
                     direction: "ltr",
                   }}
                 >
-                  {cart
-                    .reduce(
-                      (total, item) =>
-                        total +
-                        Number(item.price || 0) * Number(item.quantity || 1),
-                      0,
-                    )
-                    .toFixed(2)}{" "}
-                  {t("checkout.currency")}
+                  {subtotal.toFixed(2)} {t("checkout.currency")}
                 </Typography>
               </Box>
 
               {/* COUPON */}
+
               {coupon && (
                 <Box
                   sx={{
@@ -479,6 +399,7 @@ function Checkout() {
               />
 
               {/* TOTAL */}
+
               <Box
                 sx={{
                   display: "flex",
@@ -518,17 +439,7 @@ function Checkout() {
                     direction: "ltr",
                   }}
                 >
-                  {coupon
-                    ? Number(finalTotal || 0).toFixed(2)
-                    : cart
-                        .reduce(
-                          (total, item) =>
-                            total +
-                            Number(item.price || 0) *
-                              Number(item.quantity || 1),
-                          0,
-                        )
-                        .toFixed(2)}{" "}
+                  {total.toFixed(2)}{" "}
                   <Box
                     component="span"
                     sx={{
@@ -543,27 +454,20 @@ function Checkout() {
               </Box>
             </Box>
           </Box>
-          {/* BUTTON */}
+
+          {/* CONFIRM ORDER */}
 
           <Button
             fullWidth
-            onClick={submitOrder}
-            disabled={loading}
+            onClick={goToPayment}
             sx={{
               mt: 3,
-
               height: 50,
-
               borderRadius: 2,
-
               background: "#111",
-
               color: "#fff",
-
               fontSize: 14,
-
               fontWeight: 800,
-
               letterSpacing: 1,
 
               "&:hover": {
@@ -571,7 +475,7 @@ function Checkout() {
               },
             }}
           >
-            {loading ? t("checkout.sending") : t("checkout.confirm")}
+            {t("checkout.confirm")}
           </Button>
         </Paper>
       </Box>

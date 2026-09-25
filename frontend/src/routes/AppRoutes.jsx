@@ -9,7 +9,7 @@ import Checkout from "../pages/Checkout";
 import OrderSuccess from "../pages/OrderSuccess";
 import Favorites from "../pages/Favorites";
 import Notifications from "../pages/Notifications";
-
+import Payment from "../pages/Payment";
 function AppRoutes() {
   return (
     <Routes>
@@ -22,7 +22,7 @@ function AppRoutes() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/success" element={<OrderSuccess />} />
-
+        <Route path="/payment" element={<Payment />} />
         <Route path="/favorites" element={<Favorites />} />
 
         <Route path="/notifications" element={<Notifications />} />
