@@ -23,7 +23,12 @@ async function startServer() {
 
     // إنشاء الأدمن إذا غير موجود
     await createAdmin();
-
+    app.get("/api/health", (req, res) => {
+      res.status(200).json({
+        status: "ok",
+        message: "ZYA backend is running",
+      });
+    });
     // تشغيل السيرفر
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running on port ${PORT}`);
