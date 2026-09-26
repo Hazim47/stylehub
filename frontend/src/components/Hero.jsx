@@ -1,11 +1,32 @@
+import { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
+import API from "../api/axios";
 
 function Hero() {
   const { t, i18n } = useTranslation();
 
   const isRTL = i18n.dir() === "rtl";
+
+  const [heroVideo, setHeroVideo] = useState("/videos/hero.mp4");
+
+  useEffect(() => {
+    const fetchHomepage = async () => {
+      try {
+        const res = await API.get("/homepage");
+
+        if (res.data?.heroVideo) {
+          setHeroVideo(res.data.heroVideo);
+        }
+      } catch (error) {
+        console.error("Failed to load hero video:", error);
+      }
+    };
+
+    fetchHomepage();
+  }, []);
 
   return (
     <Box
@@ -44,7 +65,7 @@ function Hero() {
           loop
           playsInline
           preload="auto"
-          src="/videos/hero.mp4"
+          src={heroVideo}
           sx={{
             position: "absolute",
             inset: 0,
@@ -298,9 +319,7 @@ function Hero() {
             zIndex: 5,
           }}
         >
-          {/* =====================================================
-              SMALL STATEMENT
-          ====================================================== */}
+          {/* SMALL STATEMENT */}
 
           <Typography
             sx={{
@@ -330,9 +349,7 @@ function Hero() {
             {t("hero.statement")}
           </Typography>
 
-          {/* =====================================================
-              MAIN TITLE
-          ====================================================== */}
+          {/* MAIN TITLE */}
 
           <Typography
             component="h1"
@@ -375,9 +392,7 @@ function Hero() {
             {t("hero.titleLine2")}
           </Typography>
 
-          {/* =====================================================
-              THIN LINE
-          ====================================================== */}
+          {/* THIN LINE */}
 
           <Box
             sx={{
@@ -397,9 +412,7 @@ function Hero() {
             }}
           />
 
-          {/* =====================================================
-              DESCRIPTION
-          ====================================================== */}
+          {/* DESCRIPTION */}
 
           <Typography
             sx={{
@@ -430,9 +443,7 @@ function Hero() {
             {t("hero.description")}
           </Typography>
 
-          {/* =====================================================
-              BUTTONS
-          ====================================================== */}
+          {/* BUTTONS */}
 
           <Box
             sx={{

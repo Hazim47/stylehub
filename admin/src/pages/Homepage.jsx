@@ -9,6 +9,7 @@ import {
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ImageIcon from "@mui/icons-material/Image";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import { ArrowBack } from "@mui/icons-material";
 
 import { useEffect, useState } from "react";
@@ -21,6 +22,8 @@ function Homepage() {
   const [loading, setLoading] = useState(true);
 
   const [selectedImages, setSelectedImages] = useState({});
+  const [selectedVideos, setSelectedVideos] = useState({});
+
   const [uploading, setUploading] = useState({});
   const [deleting, setDeleting] = useState({});
 
@@ -31,16 +34,6 @@ function Homepage() {
   // ======================================================
 
   const imageSections = [
-    {
-      field: "heroImage1",
-      title: "Hero Image 1",
-      description: "الصورة الأولى في Hero الرئيسية",
-    },
-    {
-      field: "heroImage2",
-      title: "Hero Image 2",
-      description: "الصورة الثانية في Hero الرئيسية",
-    },
     {
       field: "summerImage",
       title: "Summer",
@@ -60,6 +53,23 @@ function Homepage() {
       field: "winterImage",
       title: "Winter",
       description: "صورة قسم Winter",
+    },
+  ];
+
+  // ======================================================
+  // VIDEO SETTINGS
+  // ======================================================
+
+  const videoSections = [
+    {
+      field: "heroVideo",
+      title: "Hero Video",
+      description: "الفيديو الرئيسي في Hero",
+    },
+    {
+      field: "fashionVideo",
+      title: "Fashion Video",
+      description: "الفيديو الخاص بقسم Fashion",
     },
   ];
 
@@ -106,11 +116,13 @@ function Homepage() {
 
     if (!allowedTypes.includes(file.type)) {
       alert("Only JPG, JPEG, PNG, WEBP and AVIF images are allowed.");
+
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
       alert("Maximum image size is 10MB.");
+
       return;
     }
 
@@ -118,6 +130,40 @@ function Homepage() {
 
     setSelectedImages((prev) => ({
       ...prev,
+
+      [field]: {
+        file,
+        preview,
+      },
+    }));
+  };
+
+  // ======================================================
+  // SELECT VIDEO
+  // ======================================================
+
+  const handleSelectVideo = (field, file) => {
+    if (!file) return;
+
+    const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only MP4, WEBM and MOV videos are allowed.");
+
+      return;
+    }
+
+    if (file.size > 200 * 1024 * 1024) {
+      alert("Maximum video size is 200MB.");
+
+      return;
+    }
+
+    const preview = URL.createObjectURL(file);
+
+    setSelectedVideos((prev) => ({
+      ...prev,
+
       [field]: {
         file,
         preview,
@@ -129,11 +175,12 @@ function Homepage() {
   // UPLOAD IMAGE
   // ======================================================
 
-  const handleUpload = async (field) => {
+  const handleUploadImage = async (field) => {
     const selected = selectedImages[field];
 
     if (!selected?.file) {
       alert("Please select an image first.");
+
       return;
     }
 
@@ -177,10 +224,62 @@ function Homepage() {
   };
 
   // ======================================================
+  // UPLOAD VIDEO
+  // ======================================================
+
+  const handleUploadVideo = async (field) => {
+    const selected = selectedVideos[field];
+
+    if (!selected?.file) {
+      alert("Please select a video first.");
+
+      return;
+    }
+
+    try {
+      setUploading((prev) => ({
+        ...prev,
+        [field]: true,
+      }));
+
+      const formData = new FormData();
+
+      formData.append("video", selected.file);
+
+      const res = await api.post(`/homepage/videos/${field}`, formData);
+
+      setHomepage(res.data.homepage);
+
+      setSelectedVideos((prev) => {
+        const updated = {
+          ...prev,
+        };
+
+        if (updated[field]?.preview) {
+          URL.revokeObjectURL(updated[field].preview);
+        }
+
+        delete updated[field];
+
+        return updated;
+      });
+    } catch (error) {
+      console.error("Upload video error:", error);
+
+      alert(error.response?.data?.message || "Failed to upload video.");
+    } finally {
+      setUploading((prev) => ({
+        ...prev,
+        [field]: false,
+      }));
+    }
+  };
+
+  // ======================================================
   // DELETE IMAGE
   // ======================================================
 
-  const handleDelete = async (field) => {
+  const handleDeleteImage = async (field) => {
     if (!homepage?.[field]) {
       return;
     }
@@ -213,6 +312,42 @@ function Homepage() {
   };
 
   // ======================================================
+  // DELETE VIDEO
+  // ======================================================
+
+  const handleDeleteVideo = async (field) => {
+    if (!homepage?.[field]) {
+      return;
+    }
+
+    const confirmed = window.confirm("هل أنت متأكد أنك تريد حذف هذا الفيديو؟");
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeleting((prev) => ({
+        ...prev,
+        [field]: true,
+      }));
+
+      const res = await api.delete(`/homepage/videos/${field}`);
+
+      setHomepage(res.data.homepage);
+    } catch (error) {
+      console.error("Delete video error:", error);
+
+      alert(error.response?.data?.message || "Failed to delete video.");
+    } finally {
+      setDeleting((prev) => ({
+        ...prev,
+        [field]: false,
+      }));
+    }
+  };
+
+  // ======================================================
   // LOADING
   // ======================================================
 
@@ -221,8 +356,11 @@ function Homepage() {
       <Box
         sx={{
           minHeight: "70vh",
+
           display: "flex",
+
           alignItems: "center",
+
           justifyContent: "center",
         }}
       >
@@ -239,20 +377,27 @@ function Homepage() {
     <Box
       sx={{
         width: "100%",
+
         p: {
           xs: 2,
           md: 4,
         },
       }}
     >
-      {/* HEADER */}
+      {/* ==================================================
+          HEADER
+      ================================================== */}
 
       <Box
         sx={{
           mb: 5,
+
           display: "flex",
+
           alignItems: "flex-start",
+
           justifyContent: "space-between",
+
           gap: 2,
         }}
       >
@@ -263,7 +408,9 @@ function Homepage() {
                 xs: "28px",
                 md: "38px",
               },
+
               fontWeight: 900,
+
               letterSpacing: 1,
             }}
           >
@@ -273,11 +420,13 @@ function Homepage() {
           <Typography
             sx={{
               mt: 1,
+
               color: "#777",
+
               fontSize: "15px",
             }}
           >
-            Manage all homepage images from one place.
+            Manage all homepage media from one place.
           </Typography>
         </Box>
 
@@ -287,11 +436,15 @@ function Homepage() {
           onClick={() => navigate("/dashboard")}
           sx={{
             width: 44,
+
             height: 44,
+
             flexShrink: 0,
+
             borderRadius: "14px",
 
             background: "#fff",
+
             color: "#111",
 
             border: "1px solid #e8e8e8",
@@ -302,9 +455,13 @@ function Homepage() {
 
             "&:hover": {
               background: "#111",
+
               color: "#fff",
+
               borderColor: "#111",
+
               transform: "translateX(-3px)",
+
               boxShadow: "0 6px 18px rgba(0, 0, 0, 0.15)",
             },
           }}
@@ -313,278 +470,731 @@ function Homepage() {
         </IconButton>
       </Box>
 
-      {/* GRID */}
+      {/* ==================================================
+          VIDEO SECTION
+      ================================================== */}
 
-      <Box
-        sx={{
-          display: "grid",
+      <Box sx={{ mb: 5 }}>
+        <Typography
+          sx={{
+            mb: 2.5,
 
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "repeat(2, 1fr)",
-          },
+            fontSize: "24px",
 
-          gap: 3,
-        }}
-      >
-        {imageSections.map((item) => {
-          const currentImage = homepage?.[item.field];
+            fontWeight: 900,
+          }}
+        >
+          Videos
+        </Typography>
 
-          const selectedImage = selectedImages[item.field];
+        <Box
+          sx={{
+            display: "grid",
 
-          const isUploading = uploading[item.field];
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(2, 1fr)",
+            },
 
-          const isDeleting = deleting[item.field];
+            gap: 3,
+          }}
+        >
+          {videoSections.map((item) => {
+            const currentVideo = homepage?.[item.field];
 
-          return (
-            <Box
-              key={item.field}
-              sx={{
-                background: "#fff",
-                border: "1px solid #e8e8e8",
-                borderRadius: "18px",
-                overflow: "hidden",
-                boxShadow: "0 5px 25px rgba(0,0,0,.05)",
-              }}
-            >
-              {/* CARD HEADER */}
+            const selectedVideo = selectedVideos[item.field];
 
+            const isUploading = uploading[item.field];
+
+            const isDeleting = deleting[item.field];
+
+            return (
               <Box
+                key={item.field}
                 sx={{
-                  p: 2.5,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  background: "#fff",
+
+                  border: "1px solid #e8e8e8",
+
+                  borderRadius: "18px",
+
+                  overflow: "hidden",
+
+                  boxShadow: "0 5px 25px rgba(0,0,0,.05)",
                 }}
               >
-                <Box>
-                  <Typography
-                    sx={{
-                      fontSize: "20px",
-                      fontWeight: 800,
-                    }}
-                  >
-                    {item.title}
-                  </Typography>
-
-                  <Typography
-                    sx={{
-                      mt: 0.5,
-                      fontSize: "13px",
-                      color: "#888",
-                    }}
-                  >
-                    {item.description}
-                  </Typography>
-                </Box>
+                {/* CARD HEADER */}
 
                 <Box
                   sx={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: "12px",
-                    background: "#f5f5f5",
+                    p: 2.5,
+
                     display: "flex",
+
                     alignItems: "center",
-                    justifyContent: "center",
+
+                    justifyContent: "space-between",
                   }}
                 >
-                  <ImageIcon sx={{ color: "#111" }} />
-                </Box>
-              </Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: "20px",
 
-              {/* IMAGE */}
-
-              <Box sx={{ px: 2.5 }}>
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%",
-                    height: {
-                      xs: "260px",
-                      sm: "300px",
-                    },
-                    borderRadius: "14px",
-                    overflow: "hidden",
-                    background: "#f4f4f4",
-                    border: "1px solid #eee",
-                  }}
-                >
-                  {selectedImage?.preview ? (
-                    <Box
-                      component="img"
-                      src={selectedImage.preview}
-                      alt="Selected preview"
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        display: "block",
-                      }}
-                    />
-                  ) : currentImage ? (
-                    <Box
-                      component="img"
-                      src={currentImage}
-                      alt={item.title}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        display: "block",
-                      }}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "#aaa",
+                        fontWeight: 800,
                       }}
                     >
-                      <ImageIcon
+                      {item.title}
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        mt: 0.5,
+
+                        fontSize: "13px",
+
+                        color: "#888",
+                      }}
+                    >
+                      {item.description}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      width: 42,
+
+                      height: 42,
+
+                      borderRadius: "12px",
+
+                      background: "#f5f5f5",
+
+                      display: "flex",
+
+                      alignItems: "center",
+
+                      justifyContent: "center",
+                    }}
+                  >
+                    <VideoLibraryIcon sx={{ color: "#111" }} />
+                  </Box>
+                </Box>
+
+                {/* VIDEO PREVIEW */}
+
+                <Box sx={{ px: 2.5 }}>
+                  <Box
+                    sx={{
+                      position: "relative",
+
+                      width: "100%",
+
+                      height: {
+                        xs: "260px",
+                        sm: "300px",
+                      },
+
+                      borderRadius: "14px",
+
+                      overflow: "hidden",
+
+                      background: "#050505",
+
+                      border: "1px solid #eee",
+                    }}
+                  >
+                    {selectedVideo?.preview ? (
+                      <Box
+                        component="video"
+                        src={selectedVideo.preview}
+                        controls
+                        muted
+                        playsInline
                         sx={{
-                          fontSize: 50,
-                          mb: 1,
+                          width: "100%",
+
+                          height: "100%",
+
+                          objectFit: "contain",
+
+                          display: "block",
                         }}
                       />
-
-                      <Typography
+                    ) : currentVideo ? (
+                      <Box
+                        component="video"
+                        src={currentVideo}
+                        controls
+                        muted
+                        playsInline
+                        preload="metadata"
                         sx={{
-                          fontSize: "14px",
-                        }}
-                      >
-                        No image
-                      </Typography>
-                    </Box>
-                  )}
+                          width: "100%",
 
-                  {selectedImage?.preview && (
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 12,
-                        left: 12,
-                        px: 1.5,
-                        py: 0.7,
-                        borderRadius: "20px",
-                        background: "#111",
-                        color: "#fff",
-                        fontSize: "12px",
-                        fontWeight: 700,
-                      }}
-                    >
-                      New Image
-                    </Box>
-                  )}
-                </Box>
-              </Box>
+                          height: "100%",
 
-              {/* ACTIONS */}
+                          objectFit: "contain",
 
-              <Box
-                sx={{
-                  p: 2.5,
-                  display: "flex",
-                  gap: 1.5,
-                  flexWrap: "wrap",
-                }}
-              >
-                <Button
-                  component="label"
-                  variant="outlined"
-                  startIcon={<CloudUploadIcon />}
-                  sx={{
-                    flex: 1,
-                    minWidth: "150px",
-                    height: "46px",
-                    borderRadius: "10px",
-                    borderColor: "#ddd",
-                    color: "#111",
-                    fontWeight: 700,
-                    textTransform: "none",
-
-                    "&:hover": {
-                      borderColor: "#111",
-                      background: "#f7f7f7",
-                    },
-                  }}
-                >
-                  Choose Image
-                  <input
-                    hidden
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
-                    onChange={(e) => {
-                      handleSelectImage(item.field, e.target.files?.[0]);
-
-                      e.target.value = "";
-                    }}
-                  />
-                </Button>
-
-                <Button
-                  variant="contained"
-                  disabled={!selectedImage?.file || isUploading}
-                  onClick={() => handleUpload(item.field)}
-                  sx={{
-                    flex: 1,
-                    minWidth: "150px",
-                    height: "46px",
-                    borderRadius: "10px",
-                    background: "#111",
-                    color: "#fff",
-                    fontWeight: 700,
-                    textTransform: "none",
-
-                    "&:hover": {
-                      background: "#333",
-                    },
-                  }}
-                >
-                  {isUploading ? (
-                    <CircularProgress size={22} sx={{ color: "#fff" }} />
-                  ) : (
-                    "Upload & Replace"
-                  )}
-                </Button>
-
-                {currentImage && (
-                  <IconButton
-                    onClick={() => handleDelete(item.field)}
-                    disabled={isDeleting}
-                    sx={{
-                      width: "46px",
-                      height: "46px",
-                      borderRadius: "10px",
-                      border: "1px solid #eee",
-                      color: "#d32f2f",
-
-                      "&:hover": {
-                        background: "#fff1f1",
-                      },
-                    }}
-                  >
-                    {isDeleting ? (
-                      <CircularProgress
-                        size={20}
-                        sx={{
-                          color: "#d32f2f",
+                          display: "block",
                         }}
                       />
                     ) : (
-                      <DeleteIcon />
+                      <Box
+                        sx={{
+                          width: "100%",
+
+                          height: "100%",
+
+                          display: "flex",
+
+                          flexDirection: "column",
+
+                          alignItems: "center",
+
+                          justifyContent: "center",
+
+                          color: "#777",
+                        }}
+                      >
+                        <VideoLibraryIcon
+                          sx={{
+                            fontSize: 50,
+
+                            mb: 1,
+                          }}
+                        />
+
+                        <Typography
+                          sx={{
+                            fontSize: "14px",
+                          }}
+                        >
+                          No video
+                        </Typography>
+                      </Box>
                     )}
-                  </IconButton>
-                )}
+
+                    {selectedVideo?.preview && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+
+                          top: 12,
+
+                          left: 12,
+
+                          px: 1.5,
+
+                          py: 0.7,
+
+                          borderRadius: "20px",
+
+                          background: "#111",
+
+                          color: "#fff",
+
+                          fontSize: "12px",
+
+                          fontWeight: 700,
+                        }}
+                      >
+                        New Video
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+
+                {/* VIDEO ACTIONS */}
+
+                <Box
+                  sx={{
+                    p: 2.5,
+
+                    display: "flex",
+
+                    gap: 1.5,
+
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<CloudUploadIcon />}
+                    sx={{
+                      flex: 1,
+
+                      minWidth: "150px",
+
+                      height: "46px",
+
+                      borderRadius: "10px",
+
+                      borderColor: "#ddd",
+
+                      color: "#111",
+
+                      fontWeight: 700,
+
+                      textTransform: "none",
+
+                      "&:hover": {
+                        borderColor: "#111",
+
+                        background: "#f7f7f7",
+                      },
+                    }}
+                  >
+                    Choose Video
+                    <input
+                      hidden
+                      type="file"
+                      accept="video/mp4,video/webm,video/quicktime"
+                      onChange={(e) => {
+                        handleSelectVideo(item.field, e.target.files?.[0]);
+
+                        e.target.value = "";
+                      }}
+                    />
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    disabled={!selectedVideo?.file || isUploading}
+                    onClick={() => handleUploadVideo(item.field)}
+                    sx={{
+                      flex: 1,
+
+                      minWidth: "150px",
+
+                      height: "46px",
+
+                      borderRadius: "10px",
+
+                      background: "#111",
+
+                      color: "#fff",
+
+                      fontWeight: 700,
+
+                      textTransform: "none",
+
+                      "&:hover": {
+                        background: "#333",
+                      },
+                    }}
+                  >
+                    {isUploading ? (
+                      <CircularProgress
+                        size={22}
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    ) : (
+                      "Upload & Replace"
+                    )}
+                  </Button>
+
+                  {currentVideo && (
+                    <IconButton
+                      onClick={() => handleDeleteVideo(item.field)}
+                      disabled={isDeleting}
+                      sx={{
+                        width: "46px",
+
+                        height: "46px",
+
+                        borderRadius: "10px",
+
+                        border: "1px solid #eee",
+
+                        color: "#d32f2f",
+
+                        "&:hover": {
+                          background: "#fff1f1",
+                        },
+                      }}
+                    >
+                      {isDeleting ? (
+                        <CircularProgress
+                          size={20}
+                          sx={{
+                            color: "#d32f2f",
+                          }}
+                        />
+                      ) : (
+                        <DeleteIcon />
+                      )}
+                    </IconButton>
+                  )}
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            );
+          })}
+        </Box>
+      </Box>
+
+      {/* ==================================================
+          IMAGES SECTION
+      ================================================== */}
+
+      <Box>
+        <Typography
+          sx={{
+            mb: 2.5,
+
+            fontSize: "24px",
+
+            fontWeight: 900,
+          }}
+        >
+          Images
+        </Typography>
+
+        <Box
+          sx={{
+            display: "grid",
+
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(2, 1fr)",
+            },
+
+            gap: 3,
+          }}
+        >
+          {imageSections.map((item) => {
+            const currentImage = homepage?.[item.field];
+
+            const selectedImage = selectedImages[item.field];
+
+            const isUploading = uploading[item.field];
+
+            const isDeleting = deleting[item.field];
+
+            return (
+              <Box
+                key={item.field}
+                sx={{
+                  background: "#fff",
+
+                  border: "1px solid #e8e8e8",
+
+                  borderRadius: "18px",
+
+                  overflow: "hidden",
+
+                  boxShadow: "0 5px 25px rgba(0,0,0,.05)",
+                }}
+              >
+                {/* CARD HEADER */}
+
+                <Box
+                  sx={{
+                    p: 2.5,
+
+                    display: "flex",
+
+                    alignItems: "center",
+
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: "20px",
+
+                        fontWeight: 800,
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        mt: 0.5,
+
+                        fontSize: "13px",
+
+                        color: "#888",
+                      }}
+                    >
+                      {item.description}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      width: 42,
+
+                      height: 42,
+
+                      borderRadius: "12px",
+
+                      background: "#f5f5f5",
+
+                      display: "flex",
+
+                      alignItems: "center",
+
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ImageIcon sx={{ color: "#111" }} />
+                  </Box>
+                </Box>
+
+                {/* IMAGE PREVIEW */}
+
+                <Box sx={{ px: 2.5 }}>
+                  <Box
+                    sx={{
+                      position: "relative",
+
+                      width: "100%",
+
+                      height: {
+                        xs: "260px",
+                        sm: "300px",
+                      },
+
+                      borderRadius: "14px",
+
+                      overflow: "hidden",
+
+                      background: "#f4f4f4",
+
+                      border: "1px solid #eee",
+                    }}
+                  >
+                    {selectedImage?.preview ? (
+                      <Box
+                        component="img"
+                        src={selectedImage.preview}
+                        alt="Selected preview"
+                        sx={{
+                          width: "100%",
+
+                          height: "100%",
+
+                          objectFit: "contain",
+
+                          display: "block",
+                        }}
+                      />
+                    ) : currentImage ? (
+                      <Box
+                        component="img"
+                        src={currentImage}
+                        alt={item.title}
+                        sx={{
+                          width: "100%",
+
+                          height: "100%",
+
+                          objectFit: "contain",
+
+                          display: "block",
+                        }}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: "100%",
+
+                          height: "100%",
+
+                          display: "flex",
+
+                          flexDirection: "column",
+
+                          alignItems: "center",
+
+                          justifyContent: "center",
+
+                          color: "#aaa",
+                        }}
+                      >
+                        <ImageIcon
+                          sx={{
+                            fontSize: 50,
+
+                            mb: 1,
+                          }}
+                        />
+
+                        <Typography
+                          sx={{
+                            fontSize: "14px",
+                          }}
+                        >
+                          No image
+                        </Typography>
+                      </Box>
+                    )}
+
+                    {selectedImage?.preview && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+
+                          top: 12,
+
+                          left: 12,
+
+                          px: 1.5,
+
+                          py: 0.7,
+
+                          borderRadius: "20px",
+
+                          background: "#111",
+
+                          color: "#fff",
+
+                          fontSize: "12px",
+
+                          fontWeight: 700,
+                        }}
+                      >
+                        New Image
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+
+                {/* IMAGE ACTIONS */}
+
+                <Box
+                  sx={{
+                    p: 2.5,
+
+                    display: "flex",
+
+                    gap: 1.5,
+
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<CloudUploadIcon />}
+                    sx={{
+                      flex: 1,
+
+                      minWidth: "150px",
+
+                      height: "46px",
+
+                      borderRadius: "10px",
+
+                      borderColor: "#ddd",
+
+                      color: "#111",
+
+                      fontWeight: 700,
+
+                      textTransform: "none",
+
+                      "&:hover": {
+                        borderColor: "#111",
+
+                        background: "#f7f7f7",
+                      },
+                    }}
+                  >
+                    Choose Image
+                    <input
+                      hidden
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
+                      onChange={(e) => {
+                        handleSelectImage(item.field, e.target.files?.[0]);
+
+                        e.target.value = "";
+                      }}
+                    />
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    disabled={!selectedImage?.file || isUploading}
+                    onClick={() => handleUploadImage(item.field)}
+                    sx={{
+                      flex: 1,
+
+                      minWidth: "150px",
+
+                      height: "46px",
+
+                      borderRadius: "10px",
+
+                      background: "#111",
+
+                      color: "#fff",
+
+                      fontWeight: 700,
+
+                      textTransform: "none",
+
+                      "&:hover": {
+                        background: "#333",
+                      },
+                    }}
+                  >
+                    {isUploading ? (
+                      <CircularProgress
+                        size={22}
+                        sx={{
+                          color: "#fff",
+                        }}
+                      />
+                    ) : (
+                      "Upload & Replace"
+                    )}
+                  </Button>
+
+                  {currentImage && (
+                    <IconButton
+                      onClick={() => handleDeleteImage(item.field)}
+                      disabled={isDeleting}
+                      sx={{
+                        width: "46px",
+
+                        height: "46px",
+
+                        borderRadius: "10px",
+
+                        border: "1px solid #eee",
+
+                        color: "#d32f2f",
+
+                        "&:hover": {
+                          background: "#fff1f1",
+                        },
+                      }}
+                    >
+                      {isDeleting ? (
+                        <CircularProgress
+                          size={20}
+                          sx={{
+                            color: "#d32f2f",
+                          }}
+                        />
+                      ) : (
+                        <DeleteIcon />
+                      )}
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
       </Box>
     </Box>
   );

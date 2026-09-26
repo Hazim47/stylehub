@@ -1,8 +1,29 @@
+import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
+import API from "../api/axios";
+
 function FashionVideo() {
   const { t } = useTranslation();
+
+  const [fashionVideo, setFashionVideo] = useState("/videos/fashion.mp4");
+
+  useEffect(() => {
+    const fetchHomepage = async () => {
+      try {
+        const res = await API.get("/homepage");
+
+        if (res.data?.fashionVideo) {
+          setFashionVideo(res.data.fashionVideo);
+        }
+      } catch (error) {
+        console.error("Failed to load fashion video:", error);
+      }
+    };
+
+    fetchHomepage();
+  }, []);
 
   return (
     <Box
@@ -14,6 +35,7 @@ function FashionVideo() {
       {/* =========================
           CONTENT ABOVE VIDEO
       ========================== */}
+
       <Box
         sx={{
           textAlign: "center",
@@ -86,8 +108,9 @@ function FashionVideo() {
       </Box>
 
       {/* =========================
-          YOUR ORIGINAL VIDEO
+          FASHION VIDEO
       ========================== */}
+
       <Box
         sx={{
           position: "relative",
@@ -103,9 +126,10 @@ function FashionVideo() {
         }}
       >
         {/* VIDEO */}
+
         <Box
           component="video"
-          src="/videos/fashion.mp4"
+          src={fashionVideo}
           autoPlay
           muted
           loop
@@ -123,6 +147,7 @@ function FashionVideo() {
         />
 
         {/* DARK OVERLAY */}
+
         <Box
           sx={{
             position: "absolute",

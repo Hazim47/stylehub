@@ -6,16 +6,20 @@ const {
   getHomepage,
   uploadHomepageImage,
   deleteHomepageImage,
+  uploadHomepageVideo,
+  deleteHomepageVideo,
 } = require("../controllers/homepageController");
 
-const uploadHomepage = require("../middleware/homepageUpload");
+const {
+  uploadHomepage,
+  uploadHomepageVideo: uploadHomepageVideoMiddleware,
+} = require("../middleware/homepageUpload");
 
 // ======================================================
 // GET HOMEPAGE
 // ======================================================
 
 // GET /api/homepage
-
 router.get("/", getHomepage);
 
 // ======================================================
@@ -39,8 +43,30 @@ router.post(
 // DELETE HOMEPAGE IMAGE
 // ======================================================
 
-// DELETE /api/homepage/images/heroImage1
+// DELETE /api/homepage/images/:field
 
 router.delete("/images/:field", deleteHomepageImage);
+
+// ======================================================
+// UPLOAD HOMEPAGE VIDEO
+// ======================================================
+
+// POST /api/homepage/videos/heroVideo
+// POST /api/homepage/videos/fashionVideo
+
+router.post(
+  "/videos/:field",
+  uploadHomepageVideoMiddleware.single("video"),
+  uploadHomepageVideo,
+);
+
+// ======================================================
+// DELETE HOMEPAGE VIDEO
+// ======================================================
+
+// DELETE /api/homepage/videos/heroVideo
+// DELETE /api/homepage/videos/fashionVideo
+
+router.delete("/videos/:field", deleteHomepageVideo);
 
 module.exports = router;

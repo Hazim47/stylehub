@@ -4,15 +4,15 @@ const multer = require("multer");
 // STORAGE
 // ======================================================
 
-// نخزن الصورة مؤقتًا في الذاكرة
-// حتى نرفعها مباشرة إلى Cloudinary
+// نخزن الملف مؤقتاً في الذاكرة
+// ثم نرفعه مباشرة إلى Cloudinary
 const storage = multer.memoryStorage();
 
 // ======================================================
-// FILE FILTER
+// IMAGE FILTER
 // ======================================================
 
-const fileFilter = (req, file, cb) => {
+const imageFileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/jpeg",
     "image/jpg",
@@ -32,16 +32,50 @@ const fileFilter = (req, file, cb) => {
 };
 
 // ======================================================
-// MULTER
+// VIDEO FILTER
+// ======================================================
+
+const videoFileFilter = (req, file, cb) => {
+  const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only MP4, WEBM and MOV videos are allowed"), false);
+  }
+};
+
+// ======================================================
+// IMAGE UPLOAD
 // ======================================================
 
 const uploadHomepage = multer({
   storage,
-  fileFilter,
+  fileFilter: imageFileFilter,
 
   limits: {
-    fileSize: 10 * 1024 * 1024,
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
 });
 
-module.exports = uploadHomepage;
+// ======================================================
+// VIDEO UPLOAD
+// ======================================================
+
+const uploadHomepageVideo = multer({
+  storage,
+  fileFilter: videoFileFilter,
+
+  limits: {
+    fileSize: 200 * 1024 * 1024, // 200MB
+  },
+});
+
+// ======================================================
+// EXPORTS
+// ======================================================
+
+module.exports = {
+  uploadHomepage,
+  uploadHomepageVideo,
+};

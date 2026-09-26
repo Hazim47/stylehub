@@ -10,6 +10,24 @@ const HomepageSettings = sequelize.define(
       autoIncrement: true,
     },
 
+    // ======================================================
+    // HERO VIDEOS
+    // ======================================================
+
+    heroVideo: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    fashionVideo: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    // ======================================================
+    // HOMEPAGE IMAGES
+    // ======================================================
+
     heroImage1: {
       type: DataTypes.STRING,
       allowNull: true,
